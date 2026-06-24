@@ -22,6 +22,11 @@
             <strong>{{ $inReview }}</strong>
             <small>Pengajuan dalam review</small>
         </div>
+        <div class="dashboard-mini-card">
+            <span>Bookmark</span>
+            <strong>{{ $bookmarkedCount }}</strong>
+            <small>Pengajuan tersimpan</small>
+        </div>
     </div>
 </section>
 
@@ -53,6 +58,10 @@
 
 <div class="opportunity-grid opportunity-grid--dashboard">
     @forelse($featuredTypes as $type)
+        @php
+            $isBookmarked = $bookmarkedIds->contains($type->id);
+        @endphp
+
         <article class="opportunity-card opportunity-card--dashboard">
             <div class="opportunity-image {{ strtolower(str_replace(' ', '-', $type->category)) }}">
                 @if($type->image_path)
@@ -63,6 +72,19 @@
             <div class="opportunity-body">
                 <div class="card-title-row">
                     <h3>{{ $type->provider ?: $type->name }}</h3>
+
+                    @if($isBookmarked)
+                        <form method="POST" action="{{ route('student.bookmarks.destroy', $type) }}" class="bookmark-inline-form">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="bookmark-icon-button active" aria-label="Hapus {{ $type->name }} dari bookmark">♥</button>
+                        </form>
+                    @else
+                        <form method="POST" action="{{ route('student.bookmarks.store', $type) }}" class="bookmark-inline-form">
+                            @csrf
+                            <button type="submit" class="bookmark-icon-button" aria-label="Simpan {{ $type->name }} ke bookmark">♡</button>
+                        </form>
+                    @endif
                 </div>
                 <p>{{ \Illuminate\Support\Str::limit($type->description, 95) }}</p>
                 <div class="card-divider"></div>
@@ -70,7 +92,10 @@
                     <span>BATAS WAKTU</span>
                     <strong>{{ $type->deadline?->format('d M Y') ?? '-' }}</strong>
                 </div>
-                <a class="text-link" href="{{ route('student.applications.create', ['type' => $type->id]) }}">Ajukan berkas</a>
+                <div class="card-action-row">
+                    <a class="text-link" href="{{ route('student.applications.create', ['type' => $type->id]) }}">Ajukan berkas</a>
+                    <a class="text-link muted-link" href="{{ route('student.bookmarks.index') }}">Bookmark</a>
+                </div>
             </div>
         </article>
     @empty

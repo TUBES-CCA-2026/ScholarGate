@@ -40,6 +40,7 @@
                 <a href="{{ route('student.profile') }}" class="nav-link {{ request()->routeIs('student.profile') ? 'active' : '' }}"><span>♙</span> Profil</a>
                 <a href="{{ route('student.applications.index') }}" class="nav-link {{ request()->routeIs('student.applications.*') ? 'active' : '' }}"><span>▣</span> Pengajuan</a>
                 <a href="{{ route('student.information') }}" class="nav-link {{ request()->routeIs('student.information') ? 'active' : '' }}"><span>☆</span> Informasi</a>
+                <a href="{{ route('student.bookmarks.index') }}" class="nav-link {{ request()->routeIs('student.bookmarks.*') ? 'active' : '' }}"><span>♡</span> Bookmark</a>
                 <a href="{{ route('student.analytics') }}" class="nav-link {{ request()->routeIs('student.analytics') ? 'active' : '' }}"><span>▥</span> Analitik</a>
             @endif
         </nav>

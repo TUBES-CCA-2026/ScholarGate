@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StudentApplicationController;
+use App\Http\Controllers\StudentBookmarkController;
 use App\Http\Controllers\StudentDashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,6 +50,9 @@ Route::middleware('auth')->group(function (): void {
     Route::put('/profile', [StudentDashboardController::class, 'updateProfile'])->name('student.profile.update');
 
     Route::get('/information', [StudentDashboardController::class, 'information'])->name('student.information');
+    Route::get('/bookmarks', [StudentBookmarkController::class, 'index'])->name('student.bookmarks.index');
+    Route::post('/bookmarks/{documentType}', [StudentBookmarkController::class, 'store'])->name('student.bookmarks.store');
+    Route::delete('/bookmarks/{documentType}', [StudentBookmarkController::class, 'destroy'])->name('student.bookmarks.destroy');
     Route::get('/analytics', [StudentDashboardController::class, 'analytics'])->name('student.analytics');
 
     Route::get('/applications', [StudentApplicationController::class, 'index'])->name('student.applications.index');

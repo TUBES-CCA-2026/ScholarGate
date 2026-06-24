@@ -17,10 +17,14 @@ class StudentDashboardController extends Controller
     {
         $user = $request->user();
 
+        $bookmarkedIds = $user->bookmarks()->pluck('document_type_id');
+
         return view('student.home', [
             'applications' => StudentApplication::whereBelongsTo($user)->latest()->take(4)->get(),
             'featuredTypes' => DocumentType::where('is_active', true)->latest()->take(3)->get(),
             'activeMatches' => DocumentType::where('is_active', true)->count(),
+            'bookmarkedCount' => $bookmarkedIds->count(),
+            'bookmarkedIds' => $bookmarkedIds,
             'inReview' => StudentApplication::whereBelongsTo($user)
                 ->whereIn('status', ['submitted', 'in_review', 'revision'])
                 ->count(),
@@ -37,13 +41,14 @@ class StudentDashboardController extends Controller
         return view('student.profile', compact('applications'));
     }
 
-    public function information(): View
+    public function information(Request $request): View
     {
         return view('student.information', [
             'documentTypes' => DocumentType::where('is_active', true)
                 ->with('requirements')
                 ->latest()
                 ->get(),
+            'bookmarkedIds' => $request->user()->bookmarks()->pluck('document_type_id'),
             'announcements' => Announcement::latest()->take(5)->get(),
         ]);
     }
