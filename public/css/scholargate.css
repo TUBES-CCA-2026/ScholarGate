@@ -4946,3 +4946,19 @@ body.app-layout table th {
         overflow-y: auto;
     }
 }
+
+.user-chip-link {
+    text-decoration: none;
+    color: inherit;
+    border-radius: 999px;
+    padding: 4px 8px;
+    transition: transform .18s ease, background-color .18s ease, box-shadow .18s ease;
+}
+
+.user-chip-link:hover,
+.user-chip-link:focus-visible {
+    transform: translateY(-1px);
+    background: rgba(24, 41, 92, 0.06);
+    box-shadow: 0 0 0 1px rgba(24, 41, 92, 0.08);
+    outline: none;
+}
