@@ -54,23 +54,45 @@
                 <span></span><span></span><span></span>
             </button>
             <span></span>
-            <div class="top-actions">
-                <div class="user-chip">
+            @php
+            $user = auth()->user();
+            $isStudent = $user && $user->role === 'student';
+        @endphp
+
+        <div class="top-actions">
+            @if($isStudent)
+                <a href="{{ route('student.profile') }}" class="user-chip user-chip-link" aria-label="Buka profil mahasiswa">
                     <div>
                         <strong>{{ $user->name ?? 'Pengguna' }}</strong>
-                        <small>{{ $isAdmin ? 'Admin Prodi' : ($user->program_studi ?? 'Mahasiswa') }}</small>
+                        <small>{{ $user->program_studi ?? 'Mahasiswa' }}</small>
                     </div>
-                        @if($user && $user->photo_path)
-                            <img class="avatar-img" src="{{ asset('storage/' . $user->photo_path) }}" alt="Foto Profil">
-                        @else
-                            <div class="avatar">{{ strtoupper(substr($user->name ?? 'P', 0, 1)) }}</div>
-                        @endif
+
+                    @if($user->photo_path)
+                        <img class="avatar-img" src="{{ asset('storage/' . $user->photo_path) }}" alt="Foto Profil">
+                    @else
+                        <div class="avatar">{{ strtoupper(substr($user->name ?? 'P', 0, 1)) }}</div>
+                    @endif
+                </a>
+            @else
+                <div class="user-chip">
+                    <div>
+                        <strong>{{ $user->name ?? 'Admin' }}</strong>
+                        <small>Admin Prodi</small>
                     </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="logout-btn" type="submit">Keluar</button>
-                </form>
-            </div>
+
+                    @if($user->photo_path)
+                        <img class="avatar-img" src="{{ asset('storage/' . $user->photo_path) }}" alt="Foto Profil">
+                    @else
+                        <div class="avatar">{{ strtoupper(substr($user->name ?? 'A', 0, 1)) }}</div>
+                    @endif
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="logout-btn" type="submit">Keluar</button>
+            </form>
+        </div>
         </header>
 
         <section class="content-area">
