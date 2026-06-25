@@ -142,7 +142,6 @@
 
             const detail = document.createElement('div');
             detail.appendChild(createTextElement('strong', item.name));
-            detail.appendChild(createTextElement('small', item.description || 'Unggah dokumen sesuai syarat.'));
             detail.appendChild(createManualCheck(item.id));
 
             wrapper.appendChild(detail);
