@@ -18,6 +18,7 @@ class StudentApplication extends Model
     public const STATUS_IN_REVIEW = 'in_review';
     public const STATUS_REVISION = 'revision';
     public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
     public const STATUS_COMPLETED = 'completed';
 
     /**
@@ -27,7 +28,8 @@ class StudentApplication extends Model
         self::STATUS_SUBMITTED => 'Dikirim',
         self::STATUS_IN_REVIEW => 'Sedang Direview',
         self::STATUS_REVISION => 'Perlu Revisi',
-        self::STATUS_APPROVED => 'Siap Diambil',
+        self::STATUS_APPROVED => 'Disetujui',
+        self::STATUS_REJECTED => 'Ditolak',
         self::STATUS_COMPLETED => 'Selesai',
     ];
 
