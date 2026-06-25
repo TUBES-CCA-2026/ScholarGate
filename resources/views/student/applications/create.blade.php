@@ -146,7 +146,6 @@
             detail.appendChild(createManualCheck(item.id));
 
             wrapper.appendChild(detail);
-            wrapper.appendChild(createFileInput(item.id, item.needs_file));
             box.appendChild(wrapper);
         });
     }
