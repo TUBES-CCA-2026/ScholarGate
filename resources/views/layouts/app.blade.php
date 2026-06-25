@@ -45,11 +45,11 @@
                 <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}"><span>☰</span> Pengumuman</a>
             @else
                 <a href="{{ route('student.home') }}" class="nav-link {{ request()->routeIs('student.home') ? 'active' : '' }}"><span>⌂</span> Beranda</a>
-                <a href="{{ route('student.profile') }}" class="nav-link {{ request()->routeIs('student.profile') ? 'active' : '' }}"><span>♙</span> Profil</a>
                 <a href="{{ route('student.applications.index') }}" class="nav-link {{ request()->routeIs('student.applications.*') ? 'active' : '' }}"><span>▣</span> Pengajuan</a>
                 <a href="{{ route('student.information') }}" class="nav-link {{ request()->routeIs('student.information') ? 'active' : '' }}"><span>☆</span> Informasi</a>
                 <a href="{{ route('student.bookmarks.index') }}" class="nav-link {{ request()->routeIs('student.bookmarks.*') ? 'active' : '' }}"><span>♡</span> Favorite</a>
                 <a href="{{ route('student.analytics') }}" class="nav-link {{ request()->routeIs('student.analytics') ? 'active' : '' }}"><span>▥</span> Analitik</a>
+                <a href="{{ route('student.profile') }}" class="nav-link {{ request()->routeIs('student.profile') ? 'active' : '' }}"><span>♙</span> Profile</a>
             @endif
         </nav>
     </aside>
