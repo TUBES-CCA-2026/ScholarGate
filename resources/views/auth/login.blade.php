@@ -67,7 +67,7 @@
                     @if($errors->any())
                         <div class="auth-alert auth-alert--danger">{{ $errors->first() }}</div>
                     @endif
-
+                    
                     <form method="POST" action="{{ route('login.store') }}" class="auth-form">
                         @csrf
 

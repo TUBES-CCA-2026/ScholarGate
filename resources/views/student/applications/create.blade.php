@@ -145,7 +145,7 @@
             detail.appendChild(createTextElement('small', item.description || 'Unggah dokumen sesuai syarat.'));
             detail.appendChild(createManualCheck(item.id));
 
-            wrapper.appendChild(detail);
+            wrapper.appendChild(detail); 
             box.appendChild(wrapper);
         });
     }

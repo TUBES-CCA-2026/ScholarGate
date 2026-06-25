@@ -33,7 +33,7 @@
                 <a class="landing-btn landing-btn--dark" href="{{ route('login') }}">Masuk</a>
             </div>
         </header>
-
+        
         <section class="auth-hero-card auth-hero-card--register" aria-labelledby="auth-title">
             <div class="auth-copy auth-copy--register">
                 <span class="landing-eyebrow">Portal Beasiswa Modern</span>
