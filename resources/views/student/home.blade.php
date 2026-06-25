@@ -41,8 +41,8 @@
     </article>
     <article class="dashboard-summary-card">
         <span>Langkah 2</span>
-        <strong>Upload Dokumen</strong>
-        <p>Kirim file persyaratan sesuai format yang diminta sistem.</p>
+        <strong>Upload Pengajuan Berkas</strong>
+        <p>Mengirim pengajuan berkas yang dibutuhkan.</p>
     </article>
     <article class="dashboard-summary-card">
         <span>Langkah 3</span>
