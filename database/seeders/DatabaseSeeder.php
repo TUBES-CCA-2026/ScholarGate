@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'role' => User::ROLE_ADMIN,
                 'phone' => '6281234567890',
+                'photo_path' => 'profile-photos/admin-prodi.jpg',
             ]
         );
 
@@ -64,8 +65,24 @@ class DatabaseSeeder extends Seeder
                 'nim' => '13020240184',
                 'program_studi' => 'Teknik Informatika',
                 'kelas' => 'A5',
-                'ipk' => 3.50,
+                'ipk' => 3.72,
                 'phone' => '081241456546',
+                'photo_path' => 'profile-photos/rendi-pratama.jpg',
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'nabil@gmail.com'],
+            [
+                'name' => 'Nabil',
+                'password' => Hash::make('password'),
+                'role' => User::ROLE_STUDENT,
+                'nim' => '13020240060',
+                'program_studi' => 'Teknik Informatika',
+                'kelas' => 'A5',
+                'ipk' => 3.72,
+                'phone' => '081241456546',
+                'photo_path' => 'profile-photos/nabil.jpg',
             ]
         );
     }
@@ -77,31 +94,44 @@ class DatabaseSeeder extends Seeder
     {
         $documentTypes = [
             [
-                'name' => 'Surat Rekomendasi Beasiswa Clarendon',
-                'category' => 'Prestasi Global',
-                'provider' => 'Oxford Clarendon Scholarship',
-                'description' => 'Pengajuan surat rekomendasi, validasi data akademik, dan kelengkapan berkas untuk kebutuhan pendaftaran beasiswa internasional.',
+                'name' => 'Beasiswa Unggulan',
+                'category' => 'S1',
+                'provider' => 'Kemendikdasmen',
+                'description' => 'Program bantuan biaya pendidikan dari pemerintah Indonesia bagi mahasiswa berprestasi pada jenjang S1, S2, dan S3, dengan seleksi berbasis kelengkapan dokumen, prestasi, rekomendasi, dan kelayakan akademik.',
                 'deadline' => now()->addMonths(2)->toDateString(),
-                'registration_link' => 'https://example.com/clarendon',
+                'registration_link' => 'https://beasiswaunggulan.kemendikdasmen.go.id/',
                 'is_active' => true,
+                'image_path' => 'document-types/beasiswa-unggulan.webp',
             ],
             [
-                'name' => 'Surat Pernyataan Beasiswa Gates Cambridge',
+                'name' => 'Beasiswa Djarum Plus',
                 'category' => 'Kepemimpinan',
-                'provider' => 'Gates Cambridge Grant',
-                'description' => 'Layanan pengurusan surat pernyataan aktif kuliah dan rekomendasi prodi untuk pendaftaran beasiswa berbasis kepemimpinan.',
-                'deadline' => now()->addMonth()->toDateString(),
-                'registration_link' => 'https://example.com/gates',
+                'provider' => 'Djarum Foundation',
+                'description' => 'Program beasiswa bagi mahasiswa berprestasi yang tidak hanya memberikan bantuan dana pendidikan, tetapi juga pelatihan soft skills, kepemimpinan, wawasan kebangsaan, karakter, dan jejaring alumni.',
+                'deadline' => now()->addMonth(1)->toDateString(),
+                'registration_link' => 'https://djarumbeasiswaplus.org/',
                 'is_active' => true,
+                'image_path' => 'document-types/beasiswa-djarum-plus.png',
             ],
             [
-                'name' => 'Validasi Berkas DAAD Research Grant',
-                'category' => 'Riset',
-                'provider' => 'DAAD Research Grant',
+                'name' => 'Beasiswa Kalla ',
+                'category' => 'S1',
+                'provider' => 'Yayasan Hadji Kalla',
                 'description' => 'Pemeriksaan kelengkapan berkas akademik dan surat pengantar prodi untuk pendaftaran hibah riset internasional.',
                 'deadline' => now()->addWeeks(6)->toDateString(),
-                'registration_link' => 'https://example.com/daad',
+                'registration_link' => 'https://www.yayasanhadjikalla.or.id/educare/beasiswa-kalla/',
                 'is_active' => true,
+                'image_path' => 'document-types/beasiswa-kalla.png',
+            ],
+            [
+                'name' => 'Beasiswa Bank Indonesia',
+                'category' => 'S1',
+                'provider' => 'Bank Indonesia',
+                'description' => 'Program beasiswa bagi mahasiswa S1 dari perguruan tinggi terpilih yang memberikan bantuan biaya pendidikan, tunjangan studi, biaya hidup, serta pembinaan melalui komunitas Generasi Baru Indonesia.',
+                'deadline' => now()->addMonths(2)->toDateString(),
+                'registration_link' => 'https://www.generasibaruindonesia.com/beasiswa',
+                'is_active' => true,
+                'image_path' => 'document-types/beasiswa-bank-indonesia.webp',
             ],
         ];
 
