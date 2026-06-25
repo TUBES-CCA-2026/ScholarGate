@@ -8,9 +8,8 @@
         'submitted' => 'Dikirim',
         'in_review' => 'Sedang Direview',
         'revision' => 'Perlu Revisi',
-        'approved' => 'Disetujui',
-        'rejected' => 'Ditolak',
         'completed' => 'Selesai',
+        'ready_pickup' => 'Siap Diambil',
     ];
 @endphp
 <div class="page-head-row">
