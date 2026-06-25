@@ -1,3 +1,6 @@
+{{--
+    Form mahasiswa untuk memilih master beasiswa dan mengunggah dokumen persyaratan.
+--}}
 @extends('layouts.app')
 
 @section('content')

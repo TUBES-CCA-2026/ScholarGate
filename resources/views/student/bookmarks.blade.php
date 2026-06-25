@@ -1,3 +1,6 @@
+{{--
+    Halaman mahasiswa untuk melihat informasi beasiswa yang sudah disimpan.
+--}}
 @extends('layouts.app')
 
 @section('content')
@@ -6,6 +9,7 @@
         <h1>Bookmark</h1>
         <p>Daftar pengajuan yang Anda simpan untuk dipantau dan diajukan kembali dengan lebih cepat.</p>
     </div>
+    <a href="{{ route('student.information') }}" class="btn primary">Cari Pengajuan</a>
 </div>
 
 <div class="panel bookmark-list-panel">

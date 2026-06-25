@@ -1,3 +1,6 @@
+{{--
+    Halaman admin untuk memeriksa detail pengajuan serta memvalidasi dokumen.
+--}}
 @extends('layouts.app')
 @section('content')
 @php

@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Model detail dokumen yang dilampirkan pada satu pengajuan mahasiswa.
+ */
 class ApplicationDocument extends Model
 {
     use HasFactory;
@@ -15,6 +18,9 @@ class ApplicationDocument extends Model
     public const STATUS_VALID = 'valid';
     public const STATUS_INVALID = 'invalid';
 
+    /**
+     * Label status yang dipakai pada tampilan mahasiswa dan admin.
+     */
     public const STATUS_LABELS = [
         self::STATUS_MISSING => 'Belum Ada',
         self::STATUS_SUBMITTED => 'Dikirim',
@@ -22,6 +28,9 @@ class ApplicationDocument extends Model
         self::STATUS_INVALID => 'Perlu Revisi',
     ];
 
+    /**
+     * Atribut yang boleh diisi melalui mass assignment.
+     */
     protected $fillable = [
         'student_application_id',
         'requirement_id',
@@ -33,6 +42,9 @@ class ApplicationDocument extends Model
         'note',
     ];
 
+    /**
+     * Konversi tipe data atribut model.
+     */
     protected function casts(): array
     {
         return [
@@ -41,16 +53,25 @@ class ApplicationDocument extends Model
         ];
     }
 
+    /**
+     * Accessor untuk label status yang mudah dibaca pada Blade.
+     */
     public function getStatusLabelAttribute(): string
     {
         return self::STATUS_LABELS[$this->status] ?? str($this->status)->replace('_', ' ')->title()->toString();
     }
 
+    /**
+     * Relasi many-to-one menuju header pengajuan mahasiswa.
+     */
     public function application(): BelongsTo
     {
         return $this->belongsTo(StudentApplication::class, 'student_application_id');
     }
 
+    /**
+     * Relasi many-to-one menuju syarat master beasiswa.
+     */
     public function requirement(): BelongsTo
     {
         return $this->belongsTo(Requirement::class);

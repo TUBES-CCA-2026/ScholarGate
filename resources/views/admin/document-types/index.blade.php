@@ -1,3 +1,6 @@
+{{--
+    Halaman admin untuk mengelola master beasiswa, foto, status aktif, dan syarat dokumen.
+--}}
 @extends('layouts.app')
 @section('content')
 <div class="page-head-row">

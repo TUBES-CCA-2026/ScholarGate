@@ -8,17 +8,17 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Membatasi route agar hanya dapat diakses oleh pengguna dengan role admin.
+ * Membatasi route mahasiswa agar tidak dapat dibuka oleh akun admin.
  */
-class EnsureAdmin
+class EnsureStudent
 {
     /**
-     * Menghentikan request non-admin dengan respons 403.
+     * Menghentikan request non-student dengan respons 403.
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user() || $request->user()->role !== User::ROLE_ADMIN) {
-            abort(403, 'Akses hanya untuk admin prodi.');
+        if (! $request->user() || $request->user()->role !== User::ROLE_STUDENT) {
+            abort(403, 'Akses hanya untuk mahasiswa.');
         }
 
         return $next($request);

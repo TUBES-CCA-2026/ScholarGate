@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\DocumentType;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,8 +13,18 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Throwable;
 
+/**
+ * Mengelola master beasiswa atau jenis pengajuan akademik.
+ *
+ * Master disimpan pada tabel document_types, sedangkan syarat dokumen disimpan
+ * terpisah pada requirements. Pemisahan ini menjaga struktur data tetap normal
+ * dan mencegah daftar syarat menjadi teks tidak terstruktur di tabel master.
+ */
 class DocumentTypeController extends Controller
 {
+    /**
+     * Menampilkan daftar master beserta seluruh syarat dokumennya.
+     */
     public function index(): View
     {
         return view('admin.document-types.index', [
@@ -21,6 +32,9 @@ class DocumentTypeController extends Controller
         ]);
     }
 
+    /**
+     * Menyimpan master beasiswa baru dan memecah daftar syarat dari textarea.
+     */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate($this->storeRules());
@@ -48,6 +62,12 @@ class DocumentTypeController extends Controller
         return back()->with('success', 'Jenis pengajuan berhasil ditambahkan.');
     }
 
+    /**
+     * Memperbarui master beasiswa, foto, status aktif, dan daftar syarat.
+     *
+     * Operasi data dilakukan dalam transaction. File lama baru dihapus setelah
+     * transaction berhasil agar data database dan storage tetap konsisten.
+     */
     public function update(Request $request, DocumentType $documentType): RedirectResponse
     {
         $validated = $request->validate($this->updateRules());
@@ -85,6 +105,12 @@ class DocumentTypeController extends Controller
         return back()->with('success', 'Jenis pengajuan berhasil diperbarui.');
     }
 
+    /**
+     * Menghapus master beasiswa dan foto pendukungnya.
+     *
+     * Relasi syarat, bookmark, dan pengajuan akan mengikuti aturan cascade dari
+     * migration sehingga tidak meninggalkan data yatim.
+     */
     public function destroy(DocumentType $documentType): RedirectResponse
     {
         $imagePath = $documentType->image_path;
@@ -95,6 +121,9 @@ class DocumentTypeController extends Controller
         return back()->with('success', 'Jenis pengajuan berhasil dihapus.');
     }
 
+    /**
+     * Aturan validasi untuk pembuatan master baru.
+     */
     private function storeRules(): array
     {
         return [
@@ -109,6 +138,9 @@ class DocumentTypeController extends Controller
         ];
     }
 
+    /**
+     * Aturan validasi untuk pembaruan master dan daftar syarat.
+     */
     private function updateRules(): array
     {
         return [
@@ -122,20 +154,30 @@ class DocumentTypeController extends Controller
             'is_active' => ['nullable', 'boolean'],
             'requirements' => ['nullable', 'array', 'max:100'],
             'requirements.*.id' => ['nullable', 'integer'],
-            'requirements.*.name' => ['nullable', 'string', 'max:255'],
+            'requirements.*.name' => ['nullable', 'string', 'max:255', 'distinct'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'remove_image' => ['nullable', 'boolean'],
         ];
     }
 
+    /**
+     * Mengubah input textarea menjadi beberapa baris requirements.
+     */
     private function createRequirementsFromText(DocumentType $documentType, ?string $text): void
     {
         collect(preg_split('/\r\n|\r|\n/', (string) $text))
             ->map(fn (string $line): string => trim($line))
             ->filter()
+            ->unique()
             ->each(fn (string $line) => $documentType->requirements()->create($this->requirementPayload($line)));
     }
 
+    /**
+     * Menyinkronkan syarat yang dikirim dari modal edit master.
+     *
+     * Syarat yang sudah dipakai pada pengajuan mahasiswa tidak dihapus agar
+     * riwayat dokumen lama tetap dapat dilacak.
+     */
     private function syncRequirementRows(DocumentType $documentType, array $rows): void
     {
         $existingRequirements = $documentType->requirements()
@@ -174,14 +216,17 @@ class DocumentTypeController extends Controller
         $this->deleteRemovedRequirements($existingRequirements, $submittedIds);
     }
 
-    private function deleteRemovedRequirements($existingRequirements, $submittedIds): void
+    /**
+     * Menghapus syarat yang tidak lagi dikirim, kecuali sudah digunakan pada pengajuan.
+     */
+    private function deleteRemovedRequirements(Collection $existingRequirements, $submittedIds): void
     {
         $requirementsToRemove = $existingRequirements->reject(
-            fn ($requirement) => $submittedIds->contains($requirement->id)
+            fn ($requirement): bool => $submittedIds->contains($requirement->id)
         );
 
         $usedRequirement = $requirementsToRemove->first(
-            fn ($requirement) => $requirement->application_documents_count > 0
+            fn ($requirement): bool => $requirement->application_documents_count > 0
         );
 
         if ($usedRequirement) {
@@ -193,6 +238,9 @@ class DocumentTypeController extends Controller
         $requirementsToRemove->each->delete();
     }
 
+    /**
+     * Payload standar requirement yang dibuat dari input ringkas admin.
+     */
     private function requirementPayload(string $name): array
     {
         return [
@@ -204,6 +252,9 @@ class DocumentTypeController extends Controller
         ];
     }
 
+    /**
+     * Menghapus file dari disk public jika path tersedia.
+     */
     private function deletePublicFile(?string $path): void
     {
         if ($path) {

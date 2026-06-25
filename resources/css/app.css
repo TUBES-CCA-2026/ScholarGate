@@ -1,3 +1,8 @@
+/*
+ * Entry point Tailwind/Vite bawaan Laravel.
+ * UI utama ScholarGate saat ini memakai public/css/scholargate.css melalui Blade,
+ * file ini tetap disimpan agar pipeline Vite tidak rusak jika Tailwind digunakan lagi.
+ */
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';

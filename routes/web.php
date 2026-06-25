@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | Public Pages
 |--------------------------------------------------------------------------
+|
+| Halaman publik hanya menampilkan landing page. Semua fitur operasional
+| dipisahkan ke area auth, student, dan admin.
+|
 */
 
 Route::view('/', 'landing')->name('landing');
@@ -23,6 +27,10 @@ Route::view('/', 'landing')->name('landing');
 |--------------------------------------------------------------------------
 | Authentication
 |--------------------------------------------------------------------------
+|
+| Route login dan register hanya boleh dibuka oleh guest. Logout berada di
+| balik auth karena hanya session aktif yang dapat diakhiri.
+|
 */
 
 Route::middleware('guest')->group(function (): void {
@@ -41,9 +49,13 @@ Route::post('/logout', [AuthController::class, 'logout'])
 |--------------------------------------------------------------------------
 | Student Area
 |--------------------------------------------------------------------------
+|
+| Area mahasiswa menggunakan kombinasi auth dan student middleware agar akun
+| admin tidak masuk ke dashboard mahasiswa.
+|
 */
 
-Route::middleware('auth')->group(function (): void {
+Route::middleware(['auth', 'student'])->group(function (): void {
     Route::get('/home', [StudentDashboardController::class, 'home'])->name('student.home');
     Route::get('/profile', [StudentDashboardController::class, 'profile'])->name('student.profile');
     Route::get('/profile/edit', [StudentDashboardController::class, 'editProfile'])->name('student.profile.edit');
@@ -67,6 +79,10 @@ Route::middleware('auth')->group(function (): void {
 |--------------------------------------------------------------------------
 | Admin Area
 |--------------------------------------------------------------------------
+|
+| Area admin diberi prefix /admin dan name admin.* agar route mudah dibedakan
+| dari route mahasiswa.
+|
 */
 
 Route::middleware(['auth', 'admin'])

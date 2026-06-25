@@ -8,13 +8,25 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+/**
+ * Mengelola pendaftaran akun mahasiswa baru.
+ */
 class RegisterController extends Controller
 {
+    /**
+     * Menampilkan halaman pendaftaran mahasiswa.
+     */
     public function show(): View
     {
         return view('auth.register');
     }
 
+    /**
+     * Menyimpan akun mahasiswa dengan role student.
+     *
+     * Password tidak di-hash manual di controller karena model User sudah
+     * menggunakan cast hashed pada atribut password.
+     */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([

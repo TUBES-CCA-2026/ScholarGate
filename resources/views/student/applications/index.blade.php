@@ -1,3 +1,6 @@
+{{--
+    Halaman mahasiswa untuk melihat riwayat pengajuan pribadi.
+--}}
 @extends('layouts.app')
 @section('content')
 <div class="page-head-row">

@@ -1,3 +1,6 @@
+{{--
+    Layout utama dashboard yang memuat sidebar, header, konten, dan script navigasi.
+--}}
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -8,6 +11,10 @@
 </head>
 <body class="app-layout">
 @php
+    /*
+     * Data role dipakai untuk menentukan menu sidebar dan shortcut profil.
+     * Logika otorisasi tetap berada di middleware, bukan hanya di tampilan.
+     */
     $user = auth()->user();
     $isAdmin = $user && $user->role === 'admin';
 @endphp
@@ -15,13 +22,13 @@
     <aside class="sidebar" id="mainSidebar" aria-label="Navigasi utama">
         <div class="brand">
             <div class="auth-showcase__brand-icon" aria-hidden="true">
-                    <svg viewBox="0 0 64 64" role="img">
-                        <path d="M5 24.3 31.7 12 59 24.3 31.7 37 5 24.3Z" fill="currentColor"/>
-                        <path d="M15.5 30.1v12.2c0 5.2 8 9.7 16.4 9.7s16.4-4.5 16.4-9.7V30.1L32 37.7 15.5 30.1Z" fill="currentColor" opacity=".92"/>
-                        <path d="M58.7 25.2v15.2" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-                        <circle cx="58.7" cy="44.8" r="3.2" fill="currentColor"/>
-                    </svg>
-                </div>
+                <svg viewBox="0 0 64 64" role="img">
+                    <path d="M5 24.3 31.7 12 59 24.3 31.7 37 5 24.3Z" fill="currentColor"/>
+                    <path d="M15.5 30.1v12.2c0 5.2 8 9.7 16.4 9.7s16.4-4.5 16.4-9.7V30.1L32 37.7 15.5 30.1Z" fill="currentColor" opacity=".92"/>
+                    <path d="M58.7 25.2v15.2" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="58.7" cy="44.8" r="3.2" fill="currentColor"/>
+                </svg>
+            </div>
             <div class="brand-copy">
                 <strong>ScholarGate</strong>
                 <span>Layanan Akademik</span>
@@ -29,6 +36,7 @@
             <button class="sidebar-close" type="button" aria-label="Tutup menu navigasi" data-sidebar-close>×</button>
         </div>
 
+        {{-- Menu dirender sesuai role pengguna untuk menjaga fokus navigasi. --}}
         <nav class="nav-menu">
             @if($isAdmin)
                 <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><span>⌂</span> Dasbor</a>
@@ -44,7 +52,6 @@
                 <a href="{{ route('student.analytics') }}" class="nav-link {{ request()->routeIs('student.analytics') ? 'active' : '' }}"><span>▥</span> Analitik</a>
             @endif
         </nav>
-
     </aside>
 
     <button class="sidebar-overlay" type="button" aria-label="Tutup menu navigasi" data-sidebar-close></button>
@@ -97,6 +104,7 @@
         </header>
 
         <section class="content-area">
+            {{-- Flash message global dari controller. --}}
             @if(session('success'))
                 <div class="alert success">{{ session('success') }}</div>
             @endif
@@ -111,6 +119,7 @@
 </div>
 <script>
     (() => {
+        // Mengatur sidebar mobile tanpa dependency eksternal.
         const body = document.body;
         const toggle = document.querySelector('[data-sidebar-toggle]');
         const closeButtons = document.querySelectorAll('[data-sidebar-close]');

@@ -7,13 +7,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
+/**
+ * Mengelola proses login dan logout pengguna ScholarGate.
+ */
 class AuthController extends Controller
 {
+    /**
+     * Menampilkan halaman login.
+     */
     public function showLogin(): View
     {
         return view('auth.login');
     }
 
+    /**
+     * Memvalidasi kredensial, membuat session baru, lalu mengarahkan pengguna sesuai role.
+     */
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
@@ -32,6 +41,9 @@ class AuthController extends Controller
         return $this->redirectToDashboard($request);
     }
 
+    /**
+     * Mengakhiri session pengguna dengan aman.
+     */
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
@@ -42,6 +54,9 @@ class AuthController extends Controller
         return redirect()->route('landing');
     }
 
+    /**
+     * Menentukan dashboard tujuan berdasarkan role pengguna aktif.
+     */
     private function redirectToDashboard(Request $request): RedirectResponse
     {
         return $request->user()->isAdmin()

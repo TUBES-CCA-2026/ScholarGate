@@ -1,3 +1,6 @@
+{{--
+    Dashboard admin berisi ringkasan pengajuan, status dokumen, dan aktivitas terbaru.
+--}}
 @extends('layouts.app')
 @section('content')
 <section class="dashboard-hero dashboard-hero--admin">

@@ -1,3 +1,6 @@
+{{--
+    Form mahasiswa untuk memperbarui profil dan foto.
+--}}
 @extends('layouts.app')
 
 @section('content')

@@ -1,3 +1,6 @@
+{{--
+    Halaman admin untuk menelusuri dan memfilter daftar pengajuan mahasiswa.
+--}}
 @extends('layouts.app')
 @section('content')
 @php

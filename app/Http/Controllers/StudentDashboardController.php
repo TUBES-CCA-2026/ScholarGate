@@ -11,12 +11,17 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
+/**
+ * Menyediakan halaman utama mahasiswa, profil, informasi, dan analitik ringkas.
+ */
 class StudentDashboardController extends Controller
 {
+    /**
+     * Menampilkan ringkasan dashboard mahasiswa aktif.
+     */
     public function home(Request $request): View
     {
         $user = $request->user();
-
         $bookmarkedIds = $user->bookmarks()->pluck('document_type_id');
 
         return view('student.home', [
@@ -26,11 +31,18 @@ class StudentDashboardController extends Controller
             'bookmarkedCount' => $bookmarkedIds->count(),
             'bookmarkedIds' => $bookmarkedIds,
             'inReview' => StudentApplication::whereBelongsTo($user)
-                ->whereIn('status', ['submitted', 'in_review', 'revision'])
+                ->whereIn('status', [
+                    StudentApplication::STATUS_SUBMITTED,
+                    StudentApplication::STATUS_IN_REVIEW,
+                    StudentApplication::STATUS_REVISION,
+                ])
                 ->count(),
         ]);
     }
 
+    /**
+     * Menampilkan profil mahasiswa dan riwayat pengajuan.
+     */
     public function profile(Request $request): View
     {
         $applications = StudentApplication::whereBelongsTo($request->user())
@@ -41,6 +53,9 @@ class StudentDashboardController extends Controller
         return view('student.profile', compact('applications'));
     }
 
+    /**
+     * Menampilkan katalog beasiswa aktif, bookmark mahasiswa, dan pengumuman.
+     */
     public function information(Request $request): View
     {
         return view('student.information', [
@@ -53,6 +68,9 @@ class StudentDashboardController extends Controller
         ]);
     }
 
+    /**
+     * Menampilkan statistik pengajuan mahasiswa aktif.
+     */
     public function analytics(Request $request): View
     {
         return view('student.analytics', [
@@ -60,6 +78,9 @@ class StudentDashboardController extends Controller
         ]);
     }
 
+    /**
+     * Menampilkan form perubahan profil mahasiswa.
+     */
     public function editProfile(Request $request): View
     {
         return view('student.edit-profile', [
@@ -67,6 +88,9 @@ class StudentDashboardController extends Controller
         ]);
     }
 
+    /**
+     * Memperbarui data profil dan foto mahasiswa.
+     */
     public function updateProfile(Request $request): RedirectResponse
     {
         $user = $request->user();
@@ -86,18 +110,27 @@ class StudentDashboardController extends Controller
             ->with('success', 'Profil berhasil diperbarui.');
     }
 
+    /**
+     * Menghitung jumlah pengajuan berdasarkan kelompok status.
+     */
     private function applicationSummary(int $userId): array
     {
         $baseQuery = StudentApplication::where('user_id', $userId);
 
         return [
             'total' => (clone $baseQuery)->count(),
-            'submitted' => (clone $baseQuery)->where('status', 'submitted')->count(),
-            'in_review' => (clone $baseQuery)->where('status', 'in_review')->count(),
-            'approved' => (clone $baseQuery)->whereIn('status', ['approved', 'completed'])->count(),
+            'submitted' => (clone $baseQuery)->where('status', StudentApplication::STATUS_SUBMITTED)->count(),
+            'in_review' => (clone $baseQuery)->where('status', StudentApplication::STATUS_IN_REVIEW)->count(),
+            'approved' => (clone $baseQuery)->whereIn('status', [
+                StudentApplication::STATUS_APPROVED,
+                StudentApplication::STATUS_COMPLETED,
+            ])->count(),
         ];
     }
 
+    /**
+     * Aturan validasi profil mahasiswa.
+     */
     private function profileRules(int $userId): array
     {
         return [
@@ -112,6 +145,9 @@ class StudentDashboardController extends Controller
         ];
     }
 
+    /**
+     * Menghapus file dari disk public jika path tersedia.
+     */
     private function deletePublicFile(?string $path): void
     {
         if ($path) {

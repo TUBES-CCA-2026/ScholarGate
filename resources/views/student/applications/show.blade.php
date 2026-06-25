@@ -1,3 +1,6 @@
+{{--
+    Halaman mahasiswa untuk melihat detail status pengajuan dan mengunggah revisi.
+--}}
 @extends('layouts.app')
 @section('content')
 @php

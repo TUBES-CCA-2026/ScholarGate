@@ -1,3 +1,6 @@
+{{--
+    Halaman mahasiswa untuk membaca informasi beasiswa dan menyimpan bookmark.
+--}}
 @extends('layouts.app')
 
 @section('content')

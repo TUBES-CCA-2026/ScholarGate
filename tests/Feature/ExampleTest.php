@@ -2,15 +2,17 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * Smoke test dasar untuk memastikan landing page publik dapat diakses.
+ */
 class ExampleTest extends TestCase
 {
     /**
-     * A basic test example.
+     * Landing page ScholarGate harus merespons HTTP 200.
      */
-    public function test_the_application_returns_a_successful_response(): void
+    public function test_the_landing_page_returns_a_successful_response(): void
     {
         $response = $this->get('/');
 

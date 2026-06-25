@@ -9,16 +9,30 @@ use App\Models\StudentApplication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
+/**
+ * Mengelola siklus pengajuan berkas mahasiswa.
+ *
+ * Alur utama: mahasiswa memilih master beasiswa, mengisi tujuan, mengunggah
+ * dokumen sesuai requirements, melihat detail pengajuan, dan mengirim revisi
+ * jika admin menandai dokumen sebagai invalid atau missing.
+ */
 class StudentApplicationController extends Controller
 {
+    /** Ekstensi dokumen yang diizinkan untuk unggahan awal dan revisi. */
     private const DOCUMENT_MIMES = 'pdf,jpg,jpeg,png,doc,docx';
+
+    /** Batas ukuran unggahan per berkas dalam kilobyte. */
     private const MAX_DOCUMENT_SIZE_KB = 4096;
 
+    /**
+     * Menampilkan daftar pengajuan milik mahasiswa aktif.
+     */
     public function index(Request $request): View
     {
         $applications = StudentApplication::whereBelongsTo($request->user())
@@ -29,6 +43,9 @@ class StudentApplicationController extends Controller
         return view('student.applications.index', compact('applications'));
     }
 
+    /**
+     * Menampilkan form pembuatan pengajuan dengan seluruh master aktif.
+     */
     public function create(): View
     {
         $documentTypes = DocumentType::where('is_active', true)
@@ -39,10 +56,15 @@ class StudentApplicationController extends Controller
         return view('student.applications.create', compact('documentTypes'));
     }
 
+    /**
+     * Membuat pengajuan baru beserta seluruh baris detail dokumennya.
+     *
+     * Transaction dipakai agar header pengajuan dan detail dokumen selalu
+     * tersimpan sebagai satu kesatuan data.
+     */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate($this->storeRules());
-
         $documentType = DocumentType::with('requirements')->findOrFail($validated['document_type_id']);
 
         $application = DB::transaction(function () use ($request, $documentType, $validated): StudentApplication {
@@ -51,7 +73,7 @@ class StudentApplicationController extends Controller
                 'document_type_id' => $documentType->id,
                 'application_code' => $this->generateApplicationCode(),
                 'purpose' => $validated['purpose'],
-                'status' => 'submitted',
+                'status' => StudentApplication::STATUS_SUBMITTED,
                 'submitted_at' => now(),
             ]);
 
@@ -67,6 +89,12 @@ class StudentApplicationController extends Controller
             ->with('success', 'Pengajuan berhasil dikirim ke prodi.');
     }
 
+    /**
+     * Menampilkan detail pengajuan.
+     *
+     * Mahasiswa hanya boleh melihat pengajuannya sendiri, sedangkan admin tetap
+     * dapat membuka detail jika diarahkan dari area pemeriksaan.
+     */
     public function show(Request $request, StudentApplication $studentApplication): View
     {
         $this->authorizeView($request, $studentApplication);
@@ -76,6 +104,9 @@ class StudentApplicationController extends Controller
         return view('student.applications.show', compact('studentApplication'));
     }
 
+    /**
+     * Mengganti file dokumen yang diminta revisi oleh admin.
+     */
     public function reviseDocument(
         Request $request,
         StudentApplication $studentApplication,
@@ -98,6 +129,9 @@ class StudentApplicationController extends Controller
         return back()->with('success', 'Berkas revisi berhasil diunggah.');
     }
 
+    /**
+     * Aturan validasi pengajuan baru.
+     */
     private function storeRules(): array
     {
         return [
@@ -114,11 +148,17 @@ class StudentApplicationController extends Controller
         ];
     }
 
+    /**
+     * Membuat kode pengajuan ringkas dan mudah dibaca admin.
+     */
     private function generateApplicationCode(): string
     {
         return 'APP-' . now()->format('Ymd') . '-' . Str::upper(Str::random(5));
     }
 
+    /**
+     * Membuat satu baris detail dokumen berdasarkan requirement master.
+     */
     private function createApplicationDocument(
         Request $request,
         StudentApplication $application,
@@ -138,7 +178,10 @@ class StudentApplicationController extends Controller
         ]);
     }
 
-    private function calculateExpirationDate(Requirement $requirement): ?\Illuminate\Support\Carbon
+    /**
+     * Menghitung tanggal kedaluwarsa dokumen jika requirement memiliki masa berlaku.
+     */
+    private function calculateExpirationDate(Requirement $requirement): ?Carbon
     {
         if (! $requirement->has_expiry || ! $requirement->valid_days) {
             return null;
@@ -147,11 +190,19 @@ class StudentApplicationController extends Controller
         return now()->addDays($requirement->valid_days);
     }
 
+    /**
+     * Menentukan status awal dokumen berdasarkan keberadaan file atau centang manual.
+     */
     private function initialDocumentStatus(?UploadedFile $uploadedFile, bool $isCheckedManual): string
     {
-        return ($uploadedFile || $isCheckedManual) ? 'submitted' : 'missing';
+        return ($uploadedFile || $isCheckedManual)
+            ? ApplicationDocument::STATUS_SUBMITTED
+            : ApplicationDocument::STATUS_MISSING;
     }
 
+    /**
+     * Menghapus file lama lalu menyimpan file revisi baru.
+     */
     private function replaceDocumentFile(ApplicationDocument $document, UploadedFile $file): void
     {
         $this->deletePublicFile($document->file_path);
@@ -160,27 +211,36 @@ class StudentApplicationController extends Controller
             'file_path' => $file->store('application-documents', 'public'),
             'original_name' => $file->getClientOriginalName(),
             'is_checked_manual' => false,
-            'status' => 'submitted',
+            'status' => ApplicationDocument::STATUS_SUBMITTED,
             'note' => null,
         ]);
     }
 
+    /**
+     * Mengembalikan status pengajuan menjadi submitted ketika seluruh revisi selesai.
+     */
     private function resubmitApplicationWhenRevisionIsComplete(StudentApplication $application): void
     {
         $stillNeedRevision = $application->documents()
-            ->whereIn('status', ['invalid', 'missing'])
+            ->whereIn('status', [ApplicationDocument::STATUS_INVALID, ApplicationDocument::STATUS_MISSING])
             ->exists();
 
         if (! $stillNeedRevision) {
-            $application->update(['status' => 'submitted']);
+            $application->update(['status' => StudentApplication::STATUS_SUBMITTED]);
         }
     }
 
+    /**
+     * Otorisasi akses detail pengajuan.
+     */
     private function authorizeView(Request $request, StudentApplication $application): void
     {
         abort_unless($application->user_id === $request->user()->id || $request->user()->isAdmin(), 403);
     }
 
+    /**
+     * Otorisasi unggahan revisi dokumen.
+     */
     private function authorizeRevision(
         Request $request,
         StudentApplication $application,
@@ -188,9 +248,16 @@ class StudentApplicationController extends Controller
     ): void {
         abort_unless($application->user_id === $request->user()->id, 403);
         abort_unless($document->student_application_id === $application->id, 404);
-        abort_unless($application->status === 'revision' && in_array($document->status, ['invalid', 'missing'], true), 403);
+        abort_unless(
+            $application->status === StudentApplication::STATUS_REVISION
+            && in_array($document->status, [ApplicationDocument::STATUS_INVALID, ApplicationDocument::STATUS_MISSING], true),
+            403
+        );
     }
 
+    /**
+     * Menghapus file dari storage public jika path masih ada.
+     */
     private function deletePublicFile(?string $path): void
     {
         if ($path) {

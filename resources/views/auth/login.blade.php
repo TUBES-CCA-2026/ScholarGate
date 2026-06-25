@@ -1,3 +1,6 @@
+{{--
+    Halaman login ScholarGate untuk admin dan mahasiswa.
+--}}
 <!DOCTYPE html>
 <html lang="id" class="auth-page-root">
 <head>

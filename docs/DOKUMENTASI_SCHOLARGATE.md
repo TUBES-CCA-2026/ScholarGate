@@ -2,23 +2,9 @@
 
 ## 1. Ringkasan Aplikasi
 
-ScholarGate adalah aplikasi Laravel untuk mengelola pengajuan berkas mahasiswa, khususnya pengajuan beasiswa atau dokumen akademik ke admin program studi. Aplikasi memiliki dua aktor utama, yaitu mahasiswa dan admin prodi.
+ScholarGate adalah aplikasi Laravel untuk mengelola pengajuan berkas mahasiswa, terutama pengajuan beasiswa atau dokumen akademik ke admin program studi. Aplikasi memiliki dua aktor utama, yaitu mahasiswa dan admin.
 
-Fitur utama:
-
-- Landing page publik untuk pengenalan sistem.
-- Login dan register mahasiswa.
-- Dashboard mahasiswa.
-- Profil mahasiswa dan edit profil.
-- Informasi beasiswa atau jenis pengajuan.
-- Form pengajuan berkas dengan unggah dokumen.
-- Detail status pengajuan mahasiswa.
-- Revisi dokumen yang ditolak atau belum lengkap.
-- Dashboard admin.
-- Review pengajuan mahasiswa.
-- Validasi status dokumen.
-- Pengelolaan master jenis pengajuan dan syarat berkas.
-- Pengelolaan pengumuman.
+Fitur utama ScholarGate meliputi landing page publik, login, register mahasiswa, dashboard mahasiswa, profil mahasiswa, informasi beasiswa, bookmark informasi, form pengajuan berkas, unggah dokumen, detail status pengajuan, revisi dokumen, dashboard admin, review pengajuan, validasi dokumen, pengelolaan master beasiswa, pengelolaan syarat berkas, dan pengelolaan pengumuman.
 
 ## 2. Teknologi yang Digunakan
 
@@ -30,6 +16,8 @@ Fitur utama:
 | Database | MySQL sesuai `.env.example` |
 | Upload file | Laravel Storage disk `public` |
 | CSS utama | `public/css/scholargate.css` |
+| Dependency PHP | `vendor` dari Composer |
+| Dependency frontend | `node_modules` dari NPM |
 
 ## 3. Struktur Folder Penting
 
@@ -38,6 +26,7 @@ app/Http/Controllers
 ├── AuthController.php
 ├── StudentDashboardController.php
 ├── StudentApplicationController.php
+├── StudentBookmarkController.php
 ├── Auth/RegisterController.php
 └── Admin/
     ├── AdminDashboardController.php
@@ -45,13 +34,27 @@ app/Http/Controllers
     ├── AnnouncementController.php
     └── DocumentTypeController.php
 
+app/Http/Middleware
+├── EnsureAdmin.php
+└── EnsureStudent.php
+
 app/Models
 ├── User.php
 ├── DocumentType.php
 ├── Requirement.php
 ├── StudentApplication.php
 ├── ApplicationDocument.php
-└── Announcement.php
+├── Announcement.php
+└── Bookmark.php
+
+database/migrations
+├── 0001_01_01_000000_create_users_table.php
+├── 2026_06_17_000002_create_document_types_table.php
+├── 2026_06_17_000003_create_requirements_table.php
+├── 2026_06_17_000004_create_student_applications_table.php
+├── 2026_06_17_000005_create_application_documents_table.php
+├── 2026_06_17_000006_create_announcements_table.php
+└── 2026_06_25_000001_create_bookmarks_table.php
 
 resources/views
 ├── landing.blade.php
@@ -60,14 +63,13 @@ resources/views
 ├── admin/
 └── layouts/
 
-routes
-└── web.php
-
 public/css
 └── scholargate.css
 ```
 
 ## 4. Alur Route
+
+Route utama berada di `routes/web.php`. Struktur route dibagi menjadi empat area: publik, guest auth, mahasiswa, dan admin.
 
 ### 4.1 Route Publik
 
@@ -77,15 +79,19 @@ public/css
 
 ### 4.2 Route Authentication
 
+Route auth hanya dapat diakses oleh guest, kecuali logout yang membutuhkan user login.
+
 | URL | Nama Route | Fungsi |
 |---|---|---|
 | `/login` | `login` | Menampilkan form login |
 | `/login` POST | `login.store` | Memproses login |
-| `/register` | `register` | Menampilkan form register |
+| `/register` | `register` | Menampilkan form register mahasiswa |
 | `/register` POST | `register.store` | Memproses register mahasiswa |
 | `/logout` POST | `logout` | Logout user |
 
 ### 4.3 Route Mahasiswa
+
+Semua route mahasiswa menggunakan middleware `auth` dan `student`.
 
 | URL | Nama Route | Fungsi |
 |---|---|---|
@@ -93,7 +99,10 @@ public/css
 | `/profile` | `student.profile` | Profil mahasiswa |
 | `/profile/edit` | `student.profile.edit` | Form edit profil |
 | `/profile` PUT | `student.profile.update` | Update profil |
-| `/information` | `student.information` | Informasi jenis pengajuan/beasiswa |
+| `/information` | `student.information` | Informasi jenis pengajuan atau beasiswa |
+| `/bookmarks` | `student.bookmarks.index` | Daftar informasi yang disimpan mahasiswa |
+| `/bookmarks` POST | `student.bookmarks.store` | Menambah bookmark |
+| `/bookmarks/{documentType}` DELETE | `student.bookmarks.destroy` | Menghapus bookmark |
 | `/analytics` | `student.analytics` | Ringkasan statistik pengajuan |
 | `/applications` | `student.applications.index` | Daftar pengajuan mahasiswa |
 | `/applications/create` | `student.applications.create` | Form pengajuan baru |
@@ -120,81 +129,41 @@ Semua route admin menggunakan middleware `auth` dan `admin`.
 | `/admin/announcements` POST | `admin.announcements.store` | Tambah pengumuman |
 | `/admin/announcements/{announcement}` DELETE | `admin.announcements.destroy` | Hapus pengumuman |
 
-## 5. Struktur Database dan Relasi
+## 5. Struktur Database Normal
+
+Database aplikasi difokuskan pada tujuh tabel domain yang dipakai langsung oleh kode.
 
 ### 5.1 `users`
 
-Menyimpan akun mahasiswa dan admin.
+Menyimpan akun mahasiswa dan admin. Kolom profil mahasiswa seperti `nim`, `program_studi`, `kelas`, `ipk`, `phone`, dan `photo_path` berada langsung pada migration utama `users` agar tidak bergantung pada migration patch.
 
-Kolom penting:
+Relasi utama:
 
-- `name`
-- `email`
-- `password`
-- `role`
-- `nim`
-- `program_studi`
-- `kelas`
-- `ipk`
-- `phone`
-- `photo_path`
-
-Relasi:
-
-- Satu `User` memiliki banyak `StudentApplication`.
+- Satu user memiliki banyak `student_applications`.
+- Satu user memiliki banyak `bookmarks`.
 
 ### 5.2 `document_types`
 
-Menyimpan master jenis pengajuan atau beasiswa.
+Menyimpan master beasiswa atau jenis pengajuan. Kolom `image_path` berada langsung pada migration utama tabel ini.
 
-Kolom penting:
+Relasi utama:
 
-- `name`
-- `category`
-- `provider`
-- `description`
-- `image_path`
-- `deadline`
-- `registration_link`
-- `is_active`
-
-Relasi:
-
-- Satu `DocumentType` memiliki banyak `Requirement`.
-- Satu `DocumentType` memiliki banyak `StudentApplication`.
+- Satu `document_type` memiliki banyak `requirements`.
+- Satu `document_type` memiliki banyak `student_applications`.
+- Satu `document_type` dapat disimpan oleh banyak user melalui `bookmarks`.
 
 ### 5.3 `requirements`
 
-Menyimpan syarat dokumen untuk setiap jenis pengajuan.
+Menyimpan syarat dokumen yang terhubung ke satu master beasiswa. Tabel ini menggantikan pendekatan teks bebas agar setiap syarat dapat dilacak, divalidasi, dan dipakai dalam detail pengajuan.
 
-Kolom penting:
+Relasi utama:
 
-- `document_type_id`
-- `name`
-- `description`
-- `is_required`
-- `needs_file`
-- `has_expiry`
-- `valid_days`
-
-Relasi:
-
-- Satu `Requirement` milik satu `DocumentType`.
-- Satu `Requirement` dapat digunakan banyak `ApplicationDocument`.
+- Satu `requirement` milik satu `document_type`.
+- Satu `requirement` dapat memiliki banyak `application_documents`.
 
 ### 5.4 `student_applications`
 
-Menyimpan data pengajuan mahasiswa.
-
-Kolom penting:
-
-- `user_id`
-- `document_type_id`
-- `application_code`
-- `purpose`
-- `status`
-- `admin_note`
-- `submitted_at`
+Menyimpan header pengajuan mahasiswa. Setiap pengajuan selalu terhubung ke satu user dan satu master beasiswa.
 
 Status pengajuan:
 
@@ -209,18 +178,7 @@ Status pengajuan:
 
 ### 5.5 `application_documents`
 
-Menyimpan dokumen yang dikirim mahasiswa untuk memenuhi syarat pengajuan.
-
-Kolom penting:
-
-- `student_application_id`
-- `requirement_id`
-- `file_path`
-- `original_name`
-- `is_checked_manual`
-- `expired_at`
-- `status`
-- `note`
+Menyimpan detail dokumen per syarat. Tabel ini menghubungkan pengajuan mahasiswa dengan requirement yang harus dipenuhi.
 
 Status dokumen:
 
@@ -235,87 +193,58 @@ Status dokumen:
 
 Menyimpan pengumuman yang tampil pada area informasi mahasiswa.
 
-Kolom penting:
+### 5.7 `bookmarks`
 
-- `title`
-- `body`
-- `published_at`
+Menyimpan informasi beasiswa yang ditandai oleh mahasiswa. Tabel ini memiliki unique constraint pada pasangan `user_id` dan `document_type_id` agar data tidak duplikat.
 
-## 6. Alur Bisnis Aplikasi
+## 6. Tabel yang Dihapus dari Skema
 
-### 6.1 Alur Mahasiswa
+Tabel berikut tidak lagi dibuat karena tidak digunakan oleh fitur ScholarGate dan konfigurasi sudah diarahkan agar tidak memerlukan tabel database bawaan tersebut:
 
-1. Mahasiswa membuka landing page.
-2. Mahasiswa melakukan register atau login.
-3. Mahasiswa melihat informasi beasiswa atau jenis pengajuan.
-4. Mahasiswa memilih jenis pengajuan.
-5. Sistem menampilkan syarat berkas sesuai master data.
-6. Mahasiswa mengunggah dokumen atau mencentang opsi proses manual.
-7. Sistem membuat kode pengajuan otomatis.
-8. Status awal pengajuan menjadi `submitted`.
-9. Mahasiswa dapat melihat detail dan status pengajuan.
-10. Jika admin menandai dokumen `invalid` atau `missing`, mahasiswa dapat mengunggah revisi.
+- `password_reset_tokens`
+- `sessions`
+- `cache`
+- `cache_locks`
+- `jobs`
+- `job_batches`
+- `failed_jobs`
 
-### 6.2 Alur Admin
+Konfigurasi yang mendukung pembersihan ini:
 
-1. Admin login.
-2. Admin masuk ke dashboard admin.
-3. Admin melihat daftar pengajuan mahasiswa.
-4. Admin membuka detail pengajuan.
-5. Admin memeriksa dokumen satu per satu.
-6. Admin mengubah status dokumen menjadi `valid`, `invalid`, `missing`, atau `submitted`.
-7. Jika ada dokumen `invalid`, status pengajuan otomatis menjadi `revision`.
-8. Admin dapat mengubah status pengajuan utama menjadi `approved`, `rejected`, atau `completed`.
-9. Admin dapat mengelola master jenis pengajuan, syarat berkas, dan pengumuman.
-
-## 7. Landing Page
-
-Landing page berada di:
-
-```text
-resources/views/landing.blade.php
+```env
+SESSION_DRIVER=file
+CACHE_STORE=file
+QUEUE_CONNECTION=sync
+QUEUE_FAILED_DRIVER=null
 ```
 
-CSS pendukung berada di:
+## 7. Alur Bisnis Mahasiswa
 
-```text
-public/css/scholargate.css
-```
+Mahasiswa membuka landing page, melakukan register atau login, melihat informasi beasiswa, menyimpan bookmark jika diperlukan, memilih jenis pengajuan, mengisi tujuan, mengunggah dokumen sesuai syarat, lalu mengirim pengajuan. Sistem membuat kode pengajuan otomatis dan memberi status awal `submitted`.
 
-Route landing page berada di:
+Setelah admin memeriksa dokumen, mahasiswa dapat melihat status detail. Jika dokumen diberi status `invalid` atau `missing` dan pengajuan berada pada status `revision`, mahasiswa dapat mengunggah file revisi melalui halaman detail pengajuan.
 
-```php
-Route::view('/', 'landing')->name('landing');
-```
+## 8. Alur Bisnis Admin
 
-Desain landing page dibuat konsisten dengan halaman login dan register, yaitu memakai gaya visual navy, blue, yellow accent, kartu rounded, badge, icon akademik, dan CTA login/register.
+Admin login, masuk ke dashboard admin, melihat daftar pengajuan, membuka detail pengajuan, memeriksa setiap dokumen, lalu mengubah status dokumen menjadi `valid`, `invalid`, `missing`, atau `submitted`. Jika terdapat dokumen `invalid`, status pengajuan dapat diarahkan ke `revision`. Admin juga dapat mengubah status utama pengajuan menjadi `approved`, `rejected`, atau `completed` sesuai hasil verifikasi.
 
-## 8. Catatan Clean Code
+Admin memiliki akses untuk mengelola master beasiswa, foto master, syarat dokumen, status aktif master, dan pengumuman.
 
-Perubahan clean code yang sudah diterapkan:
+## 9. CSS dan Asset
 
-1. Route mahasiswa yang sebelumnya dobel sudah disatukan.
-2. Route publik, auth, mahasiswa, dan admin sudah dipisahkan secara logis.
-3. Controller dirapikan dengan return type eksplisit seperti `View` dan `RedirectResponse`.
-4. Validasi dipindahkan ke method khusus pada controller yang kompleks.
-5. Business logic kecil dipisahkan menjadi private method.
-6. Status role dan status dokumen dibuat lebih konsisten melalui constant model.
-7. Migration duplikat mahasiswa dibuat no-op agar `migrate:fresh` tidak gagal.
-8. Form pengajuan diperbaiki agar benar-benar membuat input upload dokumen sesuai struktur controller.
-9. `.env` tidak ikut disertakan dalam paket clean karena berisi konfigurasi lokal yang sensitif.
-10. `.env.example` disesuaikan untuk konfigurasi ScholarGate.
+CSS utama berada di `public/css/scholargate.css`. File ini sudah dibersihkan dari selector yang tidak dipakai oleh Blade aplikasi. Entry Vite pada `resources/css/app.css`, `resources/js/app.js`, dan `resources/js/bootstrap.js` tetap dipertahankan karena masih menjadi struktur standar Laravel untuk pengembangan frontend.
 
-## 9. Cara Menjalankan Project
+Dependency pihak ketiga pada `vendor` dan `node_modules` tidak diedit manual.
+
+## 10. Cara Menjalankan Project
 
 1. Ekstrak ZIP project.
 2. Masuk ke folder project.
-3. Jalankan:
+3. Pastikan dependency sudah ada. Paket final ini menyertakan `vendor` dan `node_modules`, tetapi perintah berikut tetap dapat dijalankan ulang bila diperlukan:
 
 ```bash
 composer install
 npm install
-cp .env.example .env
-php artisan key:generate
 ```
 
 4. Sesuaikan konfigurasi database di `.env`.
@@ -349,67 +278,27 @@ php artisan serve
 http://127.0.0.1:8000
 ```
 
-## 10. File yang Umumnya Diedit
+## 11. File yang Umumnya Diedit
 
 | Kebutuhan Edit | File Utama |
 |---|---|
 | Mengubah landing page | `resources/views/landing.blade.php` |
-| Mengubah warna/desain | `public/css/scholargate.css` |
+| Mengubah warna atau desain | `public/css/scholargate.css` |
 | Mengubah route | `routes/web.php` |
+| Mengubah hak akses role | `app/Http/Middleware/EnsureAdmin.php`, `app/Http/Middleware/EnsureStudent.php` |
 | Mengubah dashboard mahasiswa | `app/Http/Controllers/StudentDashboardController.php`, `resources/views/student/home.blade.php` |
 | Mengubah pengajuan mahasiswa | `app/Http/Controllers/StudentApplicationController.php` |
+| Mengubah bookmark | `app/Http/Controllers/StudentBookmarkController.php`, `app/Models/Bookmark.php` |
 | Mengubah review admin | `app/Http/Controllers/Admin/AdminApplicationController.php` |
 | Mengubah master beasiswa | `app/Http/Controllers/Admin/DocumentTypeController.php` |
-| Mengubah relasi data | `app/Models/*.php` dan `database/migrations/*.php` |
+| Mengubah relasi data | `app/Models/*.php`, `database/migrations/*.php` |
 
-## 11. Catatan Keamanan
+## 12. Catatan Keamanan
 
-- Jangan membagikan file `.env`.
-- Jangan commit folder `vendor`, `node_modules`, dan `.git` ke ZIP distribusi.
-- Gunakan validasi file upload seperti yang sudah diterapkan pada controller.
-- Jalankan `php artisan storage:link` agar file upload bisa diakses dari folder `storage/app/public`.
-- Pastikan role admin hanya diberikan pada akun yang benar.
+Paket final ini tetap menyertakan `.env`, `.git`, `vendor`, dan `node_modules` karena diminta agar semua folder dari ZIP awal tetap lengkap. Untuk distribusi production atau repository normal, `.env`, `.git`, `vendor`, dan `node_modules` biasanya tidak dibagikan. File `.env` berisi konfigurasi lokal dan sebaiknya tidak dikirim ke pihak yang tidak berkepentingan.
 
-## 12. Catatan Pengembangan Lanjutan
+Validasi file upload tetap berada di controller. Storage public tetap memakai disk `public`, sehingga `php artisan storage:link` diperlukan agar file upload dapat diakses melalui browser.
 
-Beberapa pengembangan yang masih dapat dilakukan:
+## 13. Catatan Pengembangan Lanjutan
 
-- Membuat seeder admin default.
-- Membuat Form Request terpisah untuk validasi yang lebih modular.
-- Menambah policy Laravel untuk otorisasi pengajuan.
-- Menambah unit test untuk proses pengajuan dan revisi dokumen.
-- Menambah fitur notifikasi email atau WhatsApp yang lebih terstruktur.
-- Menambah dashboard statistik admin berbasis chart.
-
-## Catatan Distribusi Clean
-
-Paket clean ini tidak menyertakan `.env`, `.git`, `vendor`, `node_modules`, `database.sqlite`, dan file dump SQL. Struktur database dijalankan melalui migration Laravel.
-
-## Pembaruan Desain Landing Page dan Dashboard
-
-Desain terbaru ScholarGate menggunakan bahasa visual yang konsisten antara halaman publik dan halaman dashboard. Landing page dibuat lebih ringkas dengan bagian utama berikut:
-
-1. Navigasi utama.
-2. Hero section sebagai pengantar sistem.
-3. Fitur utama untuk mahasiswa dan admin.
-4. Alur singkat penggunaan sistem.
-5. Footer sederhana.
-
-Dashboard mahasiswa dan admin menggunakan gaya visual yang sama dengan landing page, yaitu latar navy gelap pada hero, aksen kuning untuk tombol utama, kartu putih rounded, dan panel ringkasan berbasis grid. Perubahan ini dilakukan agar pengguna tidak merasa berpindah ke sistem yang berbeda setelah login.
-
-File utama yang berkaitan dengan pembaruan desain:
-
-- `resources/views/landing.blade.php`
-- `resources/views/student/home.blade.php`
-- `resources/views/admin/dashboard.blade.php`
-- `public/css/scholargate.css`
-
-## Desain Halaman Login dan Register
-
-Halaman login dan register menggunakan desain yang sama dengan landing page ScholarGate. Struktur visualnya terdiri atas navbar putih, hero card navy gelap, aksen kuning sebagai tombol utama, dan kartu form putih rounded. Perubahan ini hanya menyentuh tampilan Blade dan CSS, sementara route autentikasi, controller, validasi, serta proses login/register tetap menggunakan alur Laravel yang sama.
-
-File terkait:
-
-- `resources/views/auth/login.blade.php`
-- `resources/views/auth/register.blade.php`
-- `public/css/scholargate.css`
+Pengembangan berikutnya yang masih dapat dilakukan adalah memindahkan validasi besar ke Form Request, menambah Policy Laravel untuk otorisasi pengajuan, menambah test untuk proses pengajuan dan revisi dokumen, menambah notifikasi email atau WhatsApp yang lebih terstruktur, serta membuat dashboard statistik admin berbasis chart.

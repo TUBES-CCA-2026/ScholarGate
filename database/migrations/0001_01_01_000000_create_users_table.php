@@ -7,43 +7,37 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Membuat tabel users sebagai pusat identitas pengguna ScholarGate.
+     *
+     * Tabel ini sudah memuat atribut autentikasi dan profil mahasiswa agar
+     * data personal tidak tersebar pada tabel lain. Kolom role dibatasi pada
+     * level aplikasi melalui konstanta model User.
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('role')->default('student')->index();
+            $table->string('nim', 50)->nullable()->unique();
+            $table->string('program_studi')->nullable();
+            $table->string('kelas', 100)->nullable();
+            $table->decimal('ipk', 3, 2)->nullable();
+            $table->string('phone', 30)->nullable();
+            $table->string('photo_path')->nullable();
             $table->rememberToken();
             $table->timestamps();
-        });
-
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
-        });
-
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Menghapus tabel users saat rollback migration.
      */
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
     }
 };

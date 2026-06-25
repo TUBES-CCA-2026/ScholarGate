@@ -6,9 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Membuat tabel pivot bookmark mahasiswa terhadap master beasiswa.
+     *
+     * Unique constraint memastikan satu mahasiswa hanya dapat menyimpan satu
+     * bookmark untuk document_type yang sama.
+     */
     public function up(): void
     {
-        Schema::create('bookmarks', function (Blueprint $table) {
+        Schema::create('bookmarks', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('document_type_id')->constrained()->cascadeOnDelete();
@@ -18,6 +24,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Menghapus tabel bookmark.
+     */
     public function down(): void
     {
         Schema::dropIfExists('bookmarks');

@@ -1,3 +1,6 @@
+{{--
+    Landing page publik yang memperkenalkan fungsi utama ScholarGate.
+--}}
 <!DOCTYPE html>
 <html lang="id" class="landing-page-root">
 <head>

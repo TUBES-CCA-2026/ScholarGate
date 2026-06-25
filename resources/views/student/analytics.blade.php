@@ -1,3 +1,6 @@
+{{--
+    Halaman ringkasan statistik pengajuan milik mahasiswa aktif.
+--}}
 @extends('layouts.app')
 @section('content')
 <h1 class="page-title">Analitik</h1>

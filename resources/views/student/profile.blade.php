@@ -1,3 +1,6 @@
+{{--
+    Halaman profil mahasiswa yang menampilkan data akun dan akademik.
+--}}
 @extends('layouts.app')
 @section('content')
 <h1 class="page-title">Profil Mahasiswa</h1>

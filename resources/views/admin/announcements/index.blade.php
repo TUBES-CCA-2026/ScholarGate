@@ -1,3 +1,6 @@
+{{--
+    Halaman admin untuk membuat, melihat, dan menghapus pengumuman mahasiswa.
+--}}
 @extends('layouts.app')
 @section('content')
 <div class="page-head-row">

@@ -7,10 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Model syarat dokumen untuk satu master beasiswa.
+ */
 class Requirement extends Model
 {
     use HasFactory;
 
+    /**
+     * Atribut yang boleh diisi melalui mass assignment.
+     */
     protected $fillable = [
         'document_type_id',
         'name',
@@ -21,6 +27,9 @@ class Requirement extends Model
         'valid_days',
     ];
 
+    /**
+     * Konversi tipe data atribut model.
+     */
     protected function casts(): array
     {
         return [
@@ -30,11 +39,17 @@ class Requirement extends Model
         ];
     }
 
+    /**
+     * Master beasiswa pemilik requirement ini.
+     */
     public function documentType(): BelongsTo
     {
         return $this->belongsTo(DocumentType::class);
     }
 
+    /**
+     * Dokumen pengajuan yang mengacu pada requirement ini.
+     */
     public function applicationDocuments(): HasMany
     {
         return $this->hasMany(ApplicationDocument::class);

@@ -1,3 +1,6 @@
+{{--
+    Halaman register akun mahasiswa baru.
+--}}
 <!DOCTYPE html>
 <html lang="id" class="auth-page-root">
 <head>

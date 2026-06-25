@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Model header pengajuan mahasiswa.
+ */
 class StudentApplication extends Model
 {
     use HasFactory;
@@ -18,6 +21,9 @@ class StudentApplication extends Model
     public const STATUS_REJECTED = 'rejected';
     public const STATUS_COMPLETED = 'completed';
 
+    /**
+     * Label status utama pengajuan yang ditampilkan di UI.
+     */
     public const STATUS_LABELS = [
         self::STATUS_SUBMITTED => 'Dikirim',
         self::STATUS_IN_REVIEW => 'Sedang Direview',
@@ -27,6 +33,9 @@ class StudentApplication extends Model
         self::STATUS_COMPLETED => 'Selesai',
     ];
 
+    /**
+     * Atribut yang boleh diisi melalui mass assignment.
+     */
     protected $fillable = [
         'user_id',
         'document_type_id',
@@ -37,6 +46,9 @@ class StudentApplication extends Model
         'submitted_at',
     ];
 
+    /**
+     * Konversi tipe data atribut model.
+     */
     protected function casts(): array
     {
         return [
@@ -44,26 +56,41 @@ class StudentApplication extends Model
         ];
     }
 
+    /**
+     * Accessor untuk label status yang mudah dibaca pada Blade.
+     */
     public function getStatusLabelAttribute(): string
     {
         return self::STATUS_LABELS[$this->status] ?? str($this->status)->replace('_', ' ')->title()->toString();
     }
 
+    /**
+     * Mahasiswa pemilik pengajuan.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Master beasiswa yang diajukan.
+     */
     public function documentType(): BelongsTo
     {
         return $this->belongsTo(DocumentType::class);
     }
 
+    /**
+     * Detail dokumen yang dilampirkan pada pengajuan ini.
+     */
     public function documents(): HasMany
     {
         return $this->hasMany(ApplicationDocument::class);
     }
 
+    /**
+     * Menghitung persentase kelengkapan dokumen pengajuan.
+     */
     public function completionPercentage(): int
     {
         $total = $this->documents->count();
