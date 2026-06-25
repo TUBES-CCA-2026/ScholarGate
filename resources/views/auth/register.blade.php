@@ -33,7 +33,6 @@
                 <a class="landing-btn landing-btn--dark" href="{{ route('login') }}">Masuk</a>
             </div>
         </header>
-        
         <section class="auth-hero-card auth-hero-card--register" aria-labelledby="auth-title">
             <div class="auth-copy auth-copy--register">
                 <span class="landing-eyebrow">Portal Beasiswa Modern</span>
@@ -43,6 +42,20 @@
                     mengunggah dokumen persyaratan, dan memantau proses verifikasi admin.
                 </p>
 
+                <div class="auth-mini-flow" aria-label="Ringkasan alur pendaftaran">
+                    <article>
+                        <strong>01</strong>
+                        <span>Isi identitas mahasiswa</span>
+                    </article>
+                    <article>
+                        <strong>02</strong>
+                        <span>Pilih informasi beasiswa</span>
+                    </article>
+                    <article>
+                        <strong>03</strong>
+                        <span>Unggah dokumen persyaratan</span>
+                    </article>
+                </div>
             </div>
 
             <div class="auth-form-side auth-form-side--register">

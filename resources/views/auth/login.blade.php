@@ -27,7 +27,7 @@
                     <small>Portal Beasiswa Akademik</small>
                 </span>
             </a>
-
+            
             <div class="landing-nav-actions auth-nav-actions">
                 <a class="landing-btn landing-btn--ghost" href="{{ route('landing') }}">Beranda</a>
                 <a class="landing-btn landing-btn--dark" href="{{ route('register') }}">Daftar</a>
@@ -43,6 +43,20 @@
                     memeriksa status pengajuan, dan membaca catatan revisi dari admin prodi.
                 </p>
 
+                <div class="auth-mini-flow" aria-label="Ringkasan alur ScholarGate">
+                    <article>
+                        <strong>01</strong>
+                        <span>Login akun mahasiswa atau admin</span>
+                    </article>
+                    <article>
+                        <strong>02</strong>
+                        <span>Buka dashboard sesuai role</span>
+                    </article>
+                    <article>
+                        <strong>03</strong>
+                        <span>Pantau progres pengajuan</span>
+                    </article>
+                </div>
             </div>
 
             <div class="auth-form-side">
@@ -67,7 +81,6 @@
                     @if($errors->any())
                         <div class="auth-alert auth-alert--danger">{{ $errors->first() }}</div>
                     @endif
-                    
                     <form method="POST" action="{{ route('login.store') }}" class="auth-form">
                         @csrf
 

@@ -21,17 +21,16 @@ class StudentApplication extends Model
     public const STATUS_REJECTED = 'rejected';
     public const STATUS_COMPLETED = 'completed';
 
+    public const STATUS_READY_PICKUP = 'ready_pickup';
     /**
      * Label status utama pengajuan yang ditampilkan di UI.
      */
     public const STATUS_LABELS = [
-        self::STATUS_SUBMITTED => 'Dikirim',
-        self::STATUS_IN_REVIEW => 'Sedang Direview',
-        self::STATUS_REVISION => 'Perlu Revisi',
-        self::STATUS_APPROVED => 'Disetujui',
-        self::STATUS_REJECTED => 'Ditolak',
-        self::STATUS_COMPLETED => 'Selesai',
-    ];
+    self::STATUS_IN_REVIEW => 'Sedang Direview',
+    self::STATUS_REVISION => 'Perlu Revisi',
+    self::STATUS_READY_PICKUP => 'Siap Diambil',
+    self::STATUS_COMPLETED => 'Selesai',
+];
 
     /**
      * Atribut yang boleh diisi melalui mass assignment.

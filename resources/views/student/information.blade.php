@@ -11,7 +11,7 @@
     </div>
 
     <div class="page-head-actions">
-        <a href="{{ route('student.bookmarks.index') }}" class="btn neutral">Lihat Favorite</a>
+        <a href="{{ route('student.bookmarks.index') }}" class="btn neutral">Lihat Bookmark</a>
         <a href="{{ route('student.applications.create') }}" class="btn primary">Ajukan Berkas</a>
     </div>
 </div>

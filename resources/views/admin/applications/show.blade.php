@@ -5,13 +5,11 @@
 @section('content')
 @php
     $statusOptions = [
-        'submitted' => 'Dikirim',
-        'in_review' => 'Sedang Direview',
-        'revision' => 'Perlu Revisi',
-        'approved' => 'Disetujui',
-        'rejected' => 'Ditolak',
-        'completed' => 'Selesai',
-    ];
+    'in_review' => 'Sedang Direview',
+    'revision' => 'Perlu Revisi',
+    'ready_pickup' => 'Siap Diambil',
+    'completed' => 'Selesai',
+];
 @endphp
 <div class="page-head-row">
     <div>
