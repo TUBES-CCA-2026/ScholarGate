@@ -77,7 +77,7 @@
                     </div>
                     <div class="landing-progress-list">
                         <div><span>Profil Mahasiswa</span><strong>Lengkap</strong></div>
-                        <div><span>Upload Dokumen</span><strong>Diproses</strong></div>
+                        <div><span>Upload Pengajuan Berkas</span><strong>Diproses</strong></div>
                         <div><span>Review Admin</span><strong>Menunggu</strong></div>
                     </div>
                     <div class="landing-progress-bar"><span></span></div>
@@ -99,8 +99,8 @@
                 </article>
                 <article class="landing-feature-card">
                     <span>02</span>
-                    <h3>Upload Dokumen</h3>
-                    <p>Dokumen persyaratan dikirim melalui sistem agar proses pemeriksaan lebih tertata.</p>
+                    <h3>Upload Pengajuan Berkas</h3>
+                    <p>Pengajuan berkas dikirim oleh sistem langsung ke Prodi.</p>
                 </article>
                 <article class="landing-feature-card">
                     <span>03</span>
@@ -118,7 +118,7 @@
             <div class="landing-flow__steps landing-flow__steps--clean">
                 <article><strong>1</strong><span>Daftar atau masuk akun</span></article>
                 <article><strong>2</strong><span>Pilih beasiswa</span></article>
-                <article><strong>3</strong><span>Unggah dokumen</span></article>
+                <article><strong>3</strong><span>Upload pengajuan berkas</span></article>
                 <article><strong>4</strong><span>Pantau status</span></article>
             </div>
         </section>
