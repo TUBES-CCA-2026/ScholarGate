@@ -26,7 +26,7 @@
             <small>Pengajuan dalam review</small>
         </div>
         <div class="dashboard-mini-card">
-            <span>Bookmark</span>
+            <span>Favorite</span>
             <strong>{{ $bookmarkedCount }}</strong>
             <small>Pengajuan tersimpan</small>
         </div>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="card-action-row">
                     <a class="text-link" href="{{ route('student.applications.create', ['type' => $type->id]) }}">Ajukan berkas</a>
-                    <a class="text-link muted-link" href="{{ route('student.bookmarks.index') }}">Bookmark</a>
+                    <a class="text-link muted-link" href="{{ route('student.bookmarks.index') }}">Favorite</a>
                 </div>
             </div>
         </article>
