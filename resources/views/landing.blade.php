@@ -82,7 +82,7 @@
                     </div>
                     <div class="landing-progress-bar"><span></span></div>
                 </article>
-            </div>
+            </div> 
         </section>
 
         <section class="landing-section landing-section--clean" id="fitur">
