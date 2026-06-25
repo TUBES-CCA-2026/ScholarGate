@@ -20,10 +20,10 @@ use Illuminate\View\View;
 class AdminApplicationController extends Controller
 {
     /** Daftar status utama pengajuan yang diizinkan oleh form admin. */
-    private const APPLICATION_STATUSES = 'submitted,in_review,revision,approved,rejected,completed';
+    private const APPLICATION_STATUSES = 'submitted,in_review,revision,approved,rejected,completed,ready_pickup';
 
     /** Daftar status dokumen yang diizinkan ketika admin memeriksa lampiran. */
-    private const DOCUMENT_STATUSES = 'missing,submitted,valid,invalid';
+    private const DOCUMENT_STATUSES = 'missing,submitted,valid,invalid,ready';
 
     /**
      * Menampilkan daftar pengajuan dengan filter status dan kata kunci mahasiswa.

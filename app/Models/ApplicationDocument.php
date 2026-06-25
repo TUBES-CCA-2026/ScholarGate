@@ -17,15 +17,17 @@ class ApplicationDocument extends Model
     public const STATUS_SUBMITTED = 'submitted';
     public const STATUS_VALID = 'valid';
     public const STATUS_INVALID = 'invalid';
+    public const STATUS_READY = 'ready';
 
     /**
      * Label status yang dipakai pada tampilan mahasiswa dan admin.
      */
     public const STATUS_LABELS = [
-        self::STATUS_MISSING => 'Belum Ada',
+        self::STATUS_MISSING => 'Belum Siap',
         self::STATUS_SUBMITTED => 'Dikirim',
-        self::STATUS_VALID => 'Valid',
+        self::STATUS_VALID => 'Siap',
         self::STATUS_INVALID => 'Perlu Revisi',
+        self::STATUS_READY => 'Siap Diambil',
     ];
 
     /**

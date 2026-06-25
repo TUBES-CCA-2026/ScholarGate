@@ -54,10 +54,8 @@
 
     @php
         $documentStatusOptions = [
-            'submitted' => 'Dikirim',
-            'valid' => 'Valid',
-            'invalid' => 'Perlu Revisi',
-            'missing' => 'Belum Ada',
+            'valid' => 'Siap',
+            'missing' => 'Belum Siap',
         ];
     @endphp
 
@@ -66,7 +64,6 @@
             <thead>
                 <tr>
                     <th>Syarat</th>
-                    <th>File & Preview</th>
                     <th>Cek Manual</th>
                     <th>Kedaluwarsa</th>
                     <th>Status</th>
@@ -83,27 +80,7 @@
                 <tr>
                     <td>{{ $document->requirement->name }}</td>
 
-                    <td>
-                        @if($document->file_path)
-                            <a class="text-link" href="{{ $fileUrl }}" target="_blank">
-                                {{ $document->original_name }}
-                            </a>
 
-                            @if(in_array($extension, ['jpg', 'jpeg', 'png', 'webp']))
-                                <div class="document-preview">
-                                    <img src="{{ $fileUrl }}" alt="Preview {{ $document->original_name }}" class="document-preview-image">
-                                </div>
-                            @elseif($extension === 'pdf')
-                                <div class="document-preview">
-                                    <iframe src="{{ $fileUrl }}" class="document-preview-frame"></iframe>
-                                </div>
-                            @else
-                                <small class="help-text">Preview tidak tersedia untuk format ini. Gunakan tombol file untuk membuka dokumen.</small>
-                            @endif
-                        @else
-                            -
-                        @endif
-                    </td>
 
                     <td>{{ $document->is_checked_manual ? 'Ya' : 'Tidak' }}</td>
                     <td>{{ $document->expired_at?->format('d M Y') ?? '-' }}</td>

@@ -18,7 +18,7 @@ class StudentApplication extends Model
     public const STATUS_IN_REVIEW = 'in_review';
     public const STATUS_REVISION = 'revision';
     public const STATUS_COMPLETED = 'completed';
-    public const STATUS_READY_PICKUP = 'ready_pickup';
+    public const STATUS_READY = 'ready_pickup';
     /**
      * Label status utama pengajuan yang ditampilkan di UI.
      */
@@ -26,7 +26,7 @@ class StudentApplication extends Model
     self::STATUS_SUBMITTED => 'Dikirim',
     self::STATUS_IN_REVIEW => 'Sedang Direview',
     self::STATUS_REVISION => 'Perlu Revisi',
-    self::STATUS_READY_PICKUP => 'Siap Diambil',
+    self::STATUS_READY => 'Siap Diambil',
     self::STATUS_COMPLETED => 'Selesai',
 ];
 

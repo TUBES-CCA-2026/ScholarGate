@@ -41,7 +41,7 @@
             @if($isAdmin)
                 <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><span>⌂</span> Dasbor</a>
                 <a href="{{ route('admin.applications.index') }}" class="nav-link {{ request()->routeIs('admin.applications.*') ? 'active' : '' }}"><span>▣</span> Pengajuan</a>
-                <a href="{{ route('admin.document-types.index') }}" class="nav-link {{ request()->routeIs('admin.document-types.*') ? 'active' : '' }}"><span>✦</span> Master Berkas</a>
+                <a href="{{ route('admin.document-types.index') }}" class="nav-link {{ request()->routeIs('admin.document-types.*') ? 'active' : '' }}"><span>✦</span> Beasiswa</a>
                 <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}"><span>☰</span> Pengumuman</a>
             @else
                 <a href="{{ route('student.home') }}" class="nav-link {{ request()->routeIs('student.home') ? 'active' : '' }}"><span>⌂</span> Beranda</a>

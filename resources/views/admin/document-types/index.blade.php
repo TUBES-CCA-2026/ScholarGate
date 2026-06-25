@@ -27,7 +27,7 @@
             <label for="create-description">Deskripsi</label>
             <textarea id="create-description" name="description" rows="4" required></textarea>
 
-            <label for="create-image">Foto Master Berkas</label>
+            <label for="create-image">Logo Beasiswa</label>
             <input id="create-image" type="file" name="image" accept="image/jpeg,image/png,image/webp">
             <small class="field-help">Format JPG, PNG, atau WEBP. Maksimal 4 MB.</small>
 
@@ -40,15 +40,15 @@
             <label for="create-requirements">Syarat Berkas</label>
             <textarea id="create-requirements" name="requirements" rows="5" placeholder="Tulis satu syarat per baris"></textarea>
 
-            <button type="submit" class="btn primary">Simpan Master</button>
+            <button type="submit" class="btn primary">Simpan Berkas</button>
         </form>
     </div>
 
     <div class="panel master-list-panel">
         <div class="master-list-heading">
             <div>
-                <h2>Daftar Master</h2>
-                <p>{{ $documentTypes->count() }} jenis pengajuan tersimpan.</p>
+                <h2>Daftar Beasiswa</h2>
+                <p>{{ $documentTypes->count() }} jenis beasiswa tersimpan.</p>
             </div>
         </div>
 
@@ -56,9 +56,9 @@
             <div class="list-card master-card">
                 <div class="master-card-image">
                     @if($type->image_path)
-                        <img src="{{ asset('storage/' . $type->image_path) }}" alt="Foto {{ $type->name }}">
+                        <img src="{{ asset('storage/' . $type->image_path) }}" alt="Logo {{ $type->name }}">
                     @else
-                        <div class="master-card-placeholder" aria-label="Belum ada foto">
+                        <div class="master-card-placeholder" aria-label="Belum ada logo">
                             <span>{{ strtoupper(substr($type->category, 0, 1)) }}</span>
                         </div>
                     @endif
@@ -128,7 +128,7 @@
                 <div class="master-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="master-edit-title-{{ $type->id }}">
                     <div class="master-modal-header">
                         <div>
-                            <span class="modal-eyebrow">EDIT MASTER BERKAS</span>
+                            <span class="modal-eyebrow">EDIT BERKAS BEASISWA</span>
                             <h2 id="master-edit-title-{{ $type->id }}">{{ $type->name }}</h2>
                         </div>
                         <button class="master-modal-close" type="button" data-master-close aria-label="Tutup">×</button>
@@ -236,7 +236,7 @@
                 </div>
             </div>
         @empty
-            <div class="empty-state">Belum ada master berkas.</div>
+            <div class="empty-state">Belum ada berkas beasiswa.</div>
         @endforelse
     </div>
 </div>
