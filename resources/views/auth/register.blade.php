@@ -41,21 +41,6 @@
                     Lengkapi data mahasiswa satu kali, lalu gunakan ScholarGate untuk memilih beasiswa,
                     mengunggah dokumen persyaratan, dan memantau proses verifikasi admin.
                 </p>
-
-                <div class="auth-mini-flow" aria-label="Ringkasan alur pendaftaran">
-                    <article>
-                        <strong>01</strong>
-                        <span>Isi identitas mahasiswa</span>
-                    </article>
-                    <article>
-                        <strong>02</strong>
-                        <span>Pilih informasi beasiswa</span>
-                    </article>
-                    <article>
-                        <strong>03</strong>
-                        <span>Unggah dokumen persyaratan</span>
-                    </article>
-                </div>
             </div>
 
             <div class="auth-form-side auth-form-side--register">
