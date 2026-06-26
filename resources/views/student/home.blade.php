@@ -97,7 +97,6 @@
                 </div>
                 <div class="card-action-row">
                     <a class="text-link" href="{{ route('student.applications.create', ['type' => $type->id]) }}">Ajukan berkas</a>
-                    <a class="text-link muted-link" href="{{ route('student.bookmarks.index') }}">Favorite</a>
                 </div>
             </div>
         </article>
