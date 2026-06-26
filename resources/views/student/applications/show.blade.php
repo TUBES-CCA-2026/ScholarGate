@@ -66,9 +66,9 @@
             <thead>
                 <tr>
                     <th>Syarat</th>
-                    <th>File</th>
+                    <td></td>
                     <th>Cek Manual</th>
-                    <th>Kedaluwarsa</th>
+                    <th></th>
                     <th>Status</th>
                     <th>Revisi</th>
                 </tr>
@@ -89,12 +89,12 @@
                                 {{ $document->original_name }}
                             </a>
                         @else
-                            -
+
                         @endif
                     </td>
 
                     <td>{{ $document->is_checked_manual ? 'Ya' : 'Tidak' }}</td>
-                    <td>{{ $document->expired_at?->format('d M Y') ?? '-' }}</td>
+                    <td></td>
 
                     <td>
                         <span class="status {{ $document->status }}">
