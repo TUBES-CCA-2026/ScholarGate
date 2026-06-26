@@ -2360,26 +2360,105 @@ content: "";
 z-index: 1;
 }
 
+/* ================================
+   Katalog Pengajuan Student
+   Gambar di atas deskripsi, rasio 16:9
+================================ */
+
 .information-master-card {
-display: grid;
-    grid-template-columns: 118px minmax(0, 1fr) auto;
-    gap: 16px;
-    align-items: start;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 14px !important;
+    padding: 16px !important;
 }
 
 .information-master-image {
-width: 118px;
-    aspect-ratio: 4 / 3;
-    border-radius: 9px;
-    border: 1px solid #e1e5ec;
+    order: 1;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+    display: block !important;
+    object-fit: cover !important;
+    border-radius: 14px !important;
+    border: 1px solid #e1e5ec !important;
+    background: #f3f6fa !important;
+    overflow: hidden !important;
+}
+
+.information-master-placeholder {
+    order: 1;
+    width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 14px !important;
+    border: 1px solid #e1e5ec !important;
+    background: linear-gradient(135deg, #e8edf5, #f8fafc) !important;
+    color: #34425a !important;
+    font-size: 42px !important;
+    font-weight: 900 !important;
 }
 
 .information-master-main {
-min-width: 0;
+    order: 2;
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+.information-master-main h3 {
+    margin: 8px 0 8px !important;
+}
+
+.information-master-main p {
+    margin: 0 0 10px !important;
+    line-height: 1.6 !important;
+}
+
+.information-master-card .requirement-list {
+    order: 3;
+    width: 100% !important;
+    grid-column: auto !important;
+    margin-top: 0 !important;
+}
+
+.information-master-actions {
+    order: 4;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 10px !important;
+    width: 100% !important;
+}
+
+.information-master-actions form {
+    margin: 0 !important;
+    width: auto !important;
+}
+
+.information-master-actions .btn,
+.information-master-actions .bookmark-button {
+    width: auto !important;
+    min-width: 96px !important;
 }
 
 .information-master-button {
-align-self: start;
+    align-self: auto !important;
+}
+
+@media (max-width: 640px) {
+    .information-master-actions {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .information-master-actions form,
+    .information-master-actions .btn,
+    .information-master-actions .bookmark-button {
+        width: 100% !important;
+    }
 }
 
 .information-master-card .requirement-list {
