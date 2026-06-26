@@ -108,7 +108,7 @@ class DatabaseSeeder extends Seeder
                 'category' => 'Kepemimpinan',
                 'provider' => 'Djarum Foundation',
                 'description' => 'Sejak 1984, Djarum Foundation berkomitmen memajukan pendidikan Indonesia melalui Djarum Beasiswa Plus, program beasiswa prestasi bagi mahasiswa berpotensi tinggi sebagai upaya menyiapkan masa depan bangsa yang lebih baik.',
-                'deadline' => now()->addMonth(1)->toDateString(),
+                'deadline' => now()->addMonths(2)->toDateString(),
                 'registration_link' => 'https://djarumbeasiswaplus.org/',
                 'is_active' => true,
                 'image_path' => 'document-type-images/beasiswa-djarum-plus.jpg',

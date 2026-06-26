@@ -97,6 +97,7 @@
                 </div>
                 <div class="card-action-row">
                     <a class="text-link" href="{{ route('student.applications.create', ['type' => $type->id]) }}">Ajukan berkas</a>
+                    <a class="text-link master-link" href="{{ $type->registration_link }}" target="_blank" rel="noopener noreferrer">Buka link pendaftaran</a>
                 </div>
             </div>
         </article>
