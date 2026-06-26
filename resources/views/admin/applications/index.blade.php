@@ -68,6 +68,30 @@
                 </tbody>
             </table>
         </div>
-        {{ $applications->links() }}
+        @if ($applications->hasPages())
+    <div class="pagination-wrapper">
+
+        <div class="prev">
+            @if ($applications->onFirstPage())
+                <span>Halaman Sebelumnya</span>
+            @else
+                <a href="{{ $applications->previousPageUrl() }}">
+                    Halaman Sebelumnya
+                </a>
+            @endif
+        </div>
+
+        <div class="next">
+            @if ($applications->hasMorePages())
+                <a href="{{ $applications->nextPageUrl() }}">
+                    Halaman Selanjutnya
+                </a>
+            @else
+                <span>Halaman Selanjutnya</span>
+            @endif
+        </div>
+
+    </div>
+@endif
     </div>
 @endsection

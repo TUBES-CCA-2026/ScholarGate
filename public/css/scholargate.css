@@ -948,7 +948,7 @@ img,
 svg,
 video,
 canvas {
-max-width: 3%;
+max-width: 100%;
 }
 
 .main-content,
@@ -4692,4 +4692,33 @@ width: 100%;
 
 .text-danger:hover {
     color: #a93226;
+}
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 16px;
+}
+
+.pagination-wrapper .prev {
+    text-align: left;
+}
+
+.pagination-wrapper .next {
+    text-align: right;
+}
+
+.pagination-wrapper a {
+    color: #FFD65A;
+    text-decoration: none;
+}
+
+.pagination-wrapper a:hover {
+    color: black;
+}
+
+.pagination-wrapper span {
+    color: #9ca3af;
 }
