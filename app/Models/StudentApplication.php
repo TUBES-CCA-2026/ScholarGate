@@ -101,12 +101,12 @@ class StudentApplication extends Model
         }
 
         $completed = $this->documents
-            ->filter(fn (ApplicationDocument $document): bool => in_array($document->status, [
-                ApplicationDocument::STATUS_SUBMITTED,
-                ApplicationDocument::STATUS_VALID,
-            ], true))
+            ->filter(fn (ApplicationDocument $document): bool =>
+                $document->status === ApplicationDocument::STATUS_VALID
+            )
             ->count();
 
-        return (int) round((($total - $completed) / $total) * 100);
-    }
+        return (int) round(($completed / $total) * 100);
 }
+}
+
