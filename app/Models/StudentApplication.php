@@ -97,7 +97,7 @@ class StudentApplication extends Model
         $total = $this->documents->count();
 
         if ($total === 0) {
-            return 0;
+            return 1;
         }
 
         $completed = $this->documents
