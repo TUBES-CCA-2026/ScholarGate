@@ -948,7 +948,7 @@ img,
 svg,
 video,
 canvas {
-max-width: 100%;
+max-width: 3%;
 }
 
 .main-content,

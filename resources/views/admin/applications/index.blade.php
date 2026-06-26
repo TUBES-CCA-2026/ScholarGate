@@ -56,7 +56,8 @@
                             <td><span class="status {{ $application->status }}">{{ $application->status_label }}</span>
                             </td>
                             <td><a class="text-link"
-                                    href="{{ route('admin.applications.show', $application) }}">Periksa</a>
+                                    href="{{ route('admin.applications.show', $application) }}" class="nav-link {{ request()->routeIs('admin.applications.show') ? 'active' : '' }}">Periksa</a>
+                                    
                             </td>
                         </tr>
                     @empty

@@ -97,7 +97,7 @@ class StudentApplication extends Model
         $total = $this->documents->count();
 
         if ($total === 0) {
-            return 1;
+            return 0;
         }
 
         $completed = $this->documents
@@ -107,6 +107,6 @@ class StudentApplication extends Model
             ], true))
             ->count();
 
-        return (int) round(($completed / $total) * 100);
+        return (int) round((($total - $completed) / $total) * 100);
     }
 }

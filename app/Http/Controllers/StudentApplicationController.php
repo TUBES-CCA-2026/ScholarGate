@@ -196,7 +196,7 @@ class StudentApplicationController extends Controller
     private function initialDocumentStatus(?UploadedFile $uploadedFile, bool $isCheckedManual): string
     {
         return ($uploadedFile || $isCheckedManual)
-            ? ApplicationDocument::STATUS_SUBMITTED
+            ? ApplicationDocument::STATUS_VALID
             : ApplicationDocument::STATUS_MISSING;
     }
 
