@@ -32,13 +32,13 @@ class DatabaseSeeder extends Seeder
     private function seedUsers(): void
     {
         User::updateOrCreate(
-            ['email' => 'admin@prodi.test'],
+            ['email' => 'admin@umi.ac.id'],
             [
                 'name' => 'Admin Prodi',
                 'password' => Hash::make('password'),
                 'role' => User::ROLE_ADMIN,
                 'phone' => '6281234567890',
-                'photo_path' => 'profile-photos/admin-prodi.jpg',
+                'photo_path' => 'profile-photos/admin-prodi.png',
             ]
         );
 
@@ -97,41 +97,41 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Beasiswa Unggulan',
                 'category' => 'S1',
                 'provider' => 'Kemendikdasmen',
-                'description' => 'Program bantuan biaya pendidikan dari pemerintah Indonesia bagi mahasiswa berprestasi pada jenjang S1, S2, dan S3, dengan seleksi berbasis kelengkapan dokumen, prestasi, rekomendasi, dan kelayakan akademik.',
+                'description' => 'Beasiswa Unggulan adalah program bantuan pendidikan dari Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi (Kemendikbudristek) melalui Pusat Layanan Pembiayaan Pendidikan (Puslapdik). Program ini ditujukan bagi masyarakat Indonesia yang memiliki prestasi akademik maupun non-akademik untuk melanjutkan pendidikan ke jenjang lebih tinggi di dalam maupun luar negeri. Pada tahun 2025, Beasiswa Unggulan kembali dibuka dengan persyaratan dan tata cara pendaftaran yang perlu dipahami oleh calon pendaftar.',
                 'deadline' => now()->addMonths(2)->toDateString(),
                 'registration_link' => 'https://beasiswaunggulan.kemendikdasmen.go.id/',
                 'is_active' => true,
-                'image_path' => 'document-types/beasiswa-unggulan.webp',
+                'image_path' => 'document-type-images/beasiswa-unggulan.jpg',
             ],
             [
                 'name' => 'Beasiswa Djarum Plus',
                 'category' => 'Kepemimpinan',
                 'provider' => 'Djarum Foundation',
-                'description' => 'Program beasiswa bagi mahasiswa berprestasi yang tidak hanya memberikan bantuan dana pendidikan, tetapi juga pelatihan soft skills, kepemimpinan, wawasan kebangsaan, karakter, dan jejaring alumni.',
+                'description' => 'Sejak 1984, Djarum Foundation berkomitmen memajukan pendidikan Indonesia melalui Djarum Beasiswa Plus, program beasiswa prestasi bagi mahasiswa berpotensi tinggi sebagai upaya menyiapkan masa depan bangsa yang lebih baik.',
                 'deadline' => now()->addMonth(1)->toDateString(),
                 'registration_link' => 'https://djarumbeasiswaplus.org/',
                 'is_active' => true,
-                'image_path' => 'document-types/beasiswa-djarum-plus.png',
+                'image_path' => 'document-type-images/beasiswa-djarum-plus.jpg',
             ],
             [
-                'name' => 'Beasiswa Kalla ',
-                'category' => 'S1',
-                'provider' => 'Yayasan Hadji Kalla',
-                'description' => 'Pemeriksaan kelengkapan berkas akademik dan surat pengantar prodi untuk pendaftaran hibah riset internasional.',
-                'deadline' => now()->addWeeks(6)->toDateString(),
-                'registration_link' => 'https://www.yayasanhadjikalla.or.id/educare/beasiswa-kalla/',
+                'name' => 'BSI Scholarship',
+                'category' => 'Unggulan',
+                'provider' => 'Bank Syariah Indonesia',
+                'description' => 'BSI Scholarship adalah program beasiswa dari Bank Syariah Indonesia dan BSI Maslahat yang menargetkan penyaluran kepada 5.250 pelajar dan mahasiswa pada tahun 2026.',
+                'deadline' => now()->addMonths(2)->toDateString(),
+                'registration_link' => 'https://www.bsischolarship.id/',
                 'is_active' => true,
-                'image_path' => 'document-types/beasiswa-kalla.png',
+                'image_path' => 'document-type-images/beasiswa-bsi.jpg',
             ],
             [
                 'name' => 'Beasiswa Bank Indonesia',
                 'category' => 'S1',
                 'provider' => 'Bank Indonesia',
-                'description' => 'Program beasiswa bagi mahasiswa S1 dari perguruan tinggi terpilih yang memberikan bantuan biaya pendidikan, tunjangan studi, biaya hidup, serta pembinaan melalui komunitas Generasi Baru Indonesia.',
-                'deadline' => now()->addMonths(2)->toDateString(),
-                'registration_link' => 'https://www.generasibaruindonesia.com/beasiswa',
+                'description' => 'Beasiswa Bank Indonesia (BI) adalah program bantuan pendidikan yang diselenggarakan oleh Bank Indonesia untuk mendukung pengembangan generasi muda yang unggul dan kompetitif.',
+                'deadline' => now()->addMonths(3)->toDateString(),
+                'registration_link' => 'https://www.bsischolarship.id/',
                 'is_active' => true,
-                'image_path' => 'document-types/beasiswa-bank-indonesia.webp',
+                'image_path' => 'document-type-images/beasiswa-bi.jpg',
             ],
         ];
 
