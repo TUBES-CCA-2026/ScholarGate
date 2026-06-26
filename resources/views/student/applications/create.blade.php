@@ -142,7 +142,7 @@
 
             const detail = document.createElement('div');
             detail.appendChild(createTextElement('strong', item.name));
-            detail.appendChild(createManualCheck(item.id));
+      
 
             wrapper.appendChild(detail);
             box.appendChild(wrapper);

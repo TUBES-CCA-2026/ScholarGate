@@ -16,7 +16,7 @@
         <form method="POST" action="{{ route('admin.document-types.store') }}" enctype="multipart/form-data" class="form-stack">
             @csrf
             <label for="create-name">Nama Beasiswa</label>
-            <input id="create-name" type="text" name="name" placeholder="Contoh: Surat Rekomendasi Beasiswa" required>
+            <input id="create-name" type="text" name="name" placeholder="Masukkan Nama Beasiswa" required>
 
             <label for="create-category">Kategori</label>
             <input id="create-category" type="text" name="category" placeholder="Prestasi / Kepemimpinan / Riset" required>
