@@ -99,7 +99,11 @@
                         @endforelse
                     </ul>
                 </div>
+                <div class="requirement-list">
+                    <a class="text-link master-link" href="{{ $type->registration_link }}" target="_blank" rel="noopener noreferrer">Buka link pendaftaran</a>
+                </div>
             </div>
+            
         @empty
             <div class="empty-state">
                 Belum ada informasi pengajuan aktif.

@@ -39,7 +39,7 @@
         {{-- Menu dirender sesuai role pengguna untuk menjaga fokus navigasi. --}}
         <nav class="nav-menu">
             @if($isAdmin)
-                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><span>⌂</span> Dasbor</a>
+                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><span>⌂</span> Beranda</a>
                 <a href="{{ route('admin.applications.index') }}" class="nav-link {{ request()->routeIs('admin.applications.show*') ? 'active' : '' }}"><span>▣</span> Pengajuan</a>
                 <a href="{{ route('admin.document-types.index') }}" class="nav-link {{ request()->routeIs('admin.document-types.*') ? 'active' : '' }}"><span>✦</span> Beasiswa</a>
                 <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}"><span>☰</span> Pengumuman</a>
