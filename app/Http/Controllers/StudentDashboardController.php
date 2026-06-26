@@ -7,6 +7,7 @@ use App\Models\DocumentType;
 use App\Models\StudentApplication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -73,9 +74,27 @@ class StudentDashboardController extends Controller
      */
     public function analytics(Request $request): View
     {
-        return view('student.analytics', [
-            'summary' => $this->applicationSummary($request->user()->id),
-        ]);
+        $summary = [
+            'total' => \App\Models\StudentApplication::count(),
+            'submitted' => \App\Models\StudentApplication::where('status', 'submitted')->count(),
+            'in_review' => \App\Models\StudentApplication::where('status', 'in_review')->count(),
+            'approved' => \App\Models\StudentApplication::whereIn('status', [
+                'approved',
+                'completed'
+            ])->count(),
+        ];
+
+
+        $beasiswa = \App\Models\StudentApplication::select(
+                'document_type_id',
+                DB::raw('count(*) as total')
+            )
+            ->groupBy('document_type_id')
+            ->with('documentType')
+            ->get();
+
+
+        return view('student.analytics', compact('summary', 'beasiswa'));
     }
 
     /**
