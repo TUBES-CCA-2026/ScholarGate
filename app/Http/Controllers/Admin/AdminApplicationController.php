@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Mengelola proses review pengajuan mahasiswa pada sisi admin.
@@ -114,5 +115,67 @@ class AdminApplicationController extends Controller
             'status' => StudentApplication::STATUS_REVISION,
             'admin_note' => $validated['note'] ?: 'Terdapat berkas yang perlu direvisi.',
         ]);
+    }
+    /**
+     * Menampilkan daftar pengajuan yang sudah dihapus sementara.
+     */
+    public function recycleBin(Request $request): View
+    {
+        $applications = StudentApplication::onlyTrashed()
+            ->with(['user', 'documentType'])
+            ->latest('deleted_at')
+            ->when($request->filled('q'), fn (Builder $query): Builder => $this->applyKeywordFilter($query, (string) $request->input('q')))
+            ->paginate(12)
+            ->withQueryString();
+
+        return view('admin.applications.recycle-bin', compact('applications'));
+    }
+
+    /**
+     * Memindahkan pengajuan aktif ke recycle bin.
+     */
+    public function destroy(StudentApplication $studentApplication): RedirectResponse
+    {
+        $studentApplication->delete();
+
+        return redirect()
+            ->route('admin.applications.index')
+            ->with('success', 'Pengajuan berhasil dipindahkan ke recycle bin.');
+    }
+
+    /**
+     * Memulihkan pengajuan dari recycle bin.
+     */
+    public function restore(int $applicationId): RedirectResponse
+    {
+        $application = StudentApplication::onlyTrashed()->findOrFail($applicationId);
+
+        $application->restore();
+
+        return redirect()
+            ->route('admin.applications.recycle-bin')
+            ->with('success', 'Pengajuan berhasil dipulihkan.');
+    }
+
+    /**
+     * Menghapus pengajuan secara permanen dari recycle bin.
+     */
+    public function forceDelete(int $applicationId): RedirectResponse
+    {
+        $application = StudentApplication::onlyTrashed()
+            ->with('documents')
+            ->findOrFail($applicationId);
+
+        foreach ($application->documents as $document) {
+            if ($document->file_path) {
+                Storage::disk('public')->delete($document->file_path);
+            }
+        }
+
+        $application->forceDelete();
+
+        return redirect()
+            ->route('admin.applications.recycle-bin')
+            ->with('success', 'Pengajuan berhasil dihapus permanen.');
     }
 }

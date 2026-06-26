@@ -17,6 +17,14 @@
         <p>{{ $studentApplication->application_code }}</p>
     </div>
     <a href="{{ route('admin.applications.index') }}" class="btn neutral">Kembali</a>
+    <form method="POST" action="{{ route('admin.applications.destroy', $studentApplication) }}" onsubmit="return confirm('Pindahkan pengajuan ini ke recycle bin?')">
+    @csrf
+    @method('DELETE')
+
+    <button class="btn danger" type="submit">
+        Hapus Pengajuan
+    </button>
+</form>
 </div>
 
 <div class="two-column">

@@ -4575,3 +4575,24 @@ width: 100%;
     display: grid;
     gap: 12px;
 }
+
+.btn.danger {
+    background: #fff3f3;
+    color: var(--danger);
+    border-color: #ffd0d0;
+}
+
+.text-danger {
+    color: var(--danger);
+}
+
+.table-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.table-actions form {
+    margin: 0;
+}
