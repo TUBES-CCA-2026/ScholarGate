@@ -7,7 +7,6 @@
         $statusOptions = [
             'submitted' => 'Dikirim',
             'in_review' => 'Sedang Direview',
-            'revision' => 'Perlu Revisi',
             'completed' => 'Selesai',
             'ready_pickup' => 'Siap Diambil',
         ];
