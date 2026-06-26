@@ -79,7 +79,7 @@
                 <tr>
                     <th>Syarat</th>
                     <th>Cek Manual</th>
-                    <th>Kedaluwarsa</th>
+                    <th></th>
                     <th>Status</th>
                     <th>Catatan & Aksi</th>
                 </tr>
@@ -97,7 +97,7 @@
 
 
                     <td>{{ $document->is_checked_manual ? 'Ya' : 'Tidak' }}</td>
-                    <td>{{ $document->expired_at?->format('d M Y') ?? '-' }}</td>
+                    <td></td>
                     <td>
                         <span class="status {{ $document->status }}">
                             {{ $document->status_label }}
