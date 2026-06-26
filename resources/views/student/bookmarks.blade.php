@@ -9,7 +9,6 @@
         <h1>Favorite</h1>
         <p>Daftar pengajuan yang Anda simpan untuk dipantau dan diajukan kembali dengan lebih cepat.</p>
     </div>
-    <a href="{{ route('student.information') }}" class="btn primary">Cari Pengajuan</a>
 </div>
 
 <div class="panel bookmark-list-panel">
