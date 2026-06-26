@@ -57,15 +57,6 @@
                             </td>
                             <td><a class="text-link"
                                     href="{{ route('admin.applications.show', $application) }}">Periksa</a>
-                                <form method="POST" action="{{ route('admin.applications.destroy', $application) }}"
-                                    onsubmit="return confirm('Pindahkan pengajuan ini ke recycle bin?')">
-                                    @csrf
-                                    @method('DELETE')
-
-                                    <button class="text-link text-danger" type="submit">
-                                        Hapus
-                                    </button>
-                                </form>
                             </td>
                         </tr>
                     @empty

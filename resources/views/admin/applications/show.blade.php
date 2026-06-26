@@ -11,20 +11,26 @@
     'completed' => 'Selesai',
 ];
 @endphp
-<div class="page-head-row">
+<div class="page-head-row application-detail-header">
     <div>
         <h1>Periksa Pengajuan</h1>
         <p>{{ $studentApplication->application_code }}</p>
     </div>
-    <a href="{{ route('admin.applications.index') }}" class="btn neutral">Kembali</a>
-    <form method="POST" action="{{ route('admin.applications.destroy', $studentApplication) }}" onsubmit="return confirm('Pindahkan pengajuan ini ke recycle bin?')">
-    @csrf
-    @method('DELETE')
 
-    <button class="btn danger" type="submit">
-        Hapus Pengajuan
-    </button>
-</form>
+    <div class="page-actions">
+
+        <form method="POST" action="{{ route('admin.applications.destroy', $studentApplication) }}" onsubmit="return confirm('Pindahkan pengajuan ini ke recycle bin?')">
+            @csrf
+            @method('DELETE')
+
+            <button class="btn danger" type="submit">
+                Hapus Pengajuan
+            </button>
+            <a href="{{ route('admin.applications.index') }}" class="btn neutral">
+                Kembali
+            </a>
+        </form>
+    </div>
 </div>
 
 <div class="two-column">
