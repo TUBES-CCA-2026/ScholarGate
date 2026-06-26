@@ -56,8 +56,6 @@
                     <option value="{{ $value }}" {{ $studentApplication->status === $value ? 'selected' : '' }}>{{ $label }}</option>
                 @endforeach
             </select>
-            <label>Catatan Admin</label>
-            <textarea name="admin_note" rows="5" placeholder="Tulis catatan hasil pemeriksaan...">{{ old('admin_note', $studentApplication->admin_note) }}</textarea>
             <button class="btn primary" type="submit">Simpan Status</button>
         </form>
     </div>
@@ -116,9 +114,6 @@
                                     </option>
                                 @endforeach
                             </select>
-
-                            <textarea name="note" rows="3" placeholder="Catatan khusus dokumen...">{{ old('note', $document->note) }}</textarea>
-
                             <button class="btn small primary" type="submit">
                                 Simpan
                             </button>

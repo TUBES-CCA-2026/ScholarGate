@@ -34,7 +34,6 @@ return [
         'document_type_id' => 'jenis pengajuan',
         'purpose' => 'alasan pengajuan',
         'status' => 'status',
-        'admin_note' => 'catatan admin',
         'title' => 'judul',
         'body' => 'isi pengumuman',
         'published_at' => 'tanggal publikasi',

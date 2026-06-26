@@ -47,7 +47,7 @@
     <article class="dashboard-summary-card">
         <span>Langkah 3</span>
         <strong>Pantau Status</strong>
-        <p>Cek hasil review dan unggah revisi bila ada catatan admin.</p>
+        <p>Mengubah status berkas yang diajukan</p>
     </article>
 </section>
 

@@ -58,7 +58,6 @@ class AdminApplicationController extends Controller
     {
         $validated = $request->validate([
             'status' => ['required', 'in:' . self::APPLICATION_STATUSES],
-            'admin_note' => ['nullable', 'string', 'max:2000'],
         ]);
 
         $studentApplication->update($validated);

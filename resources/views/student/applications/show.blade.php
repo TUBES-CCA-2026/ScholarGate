@@ -42,9 +42,6 @@
             <div><span>Tanggal Pengajuan</span><strong>{{ $studentApplication->submitted_at?->format('d M Y H:i') }}</strong></div>
             <div><span>Progres Berkas</span><strong>{{ $studentApplication->completionPercentage() }}%</strong></div>
         </div>
-        @if($studentApplication->admin_note)
-            <div class="note-box"><strong>Catatan Admin:</strong><br>{{ $studentApplication->admin_note }}</div>
-        @endif
     </div>
     <div class="panel">
         <h2>Data Mahasiswa</h2>
@@ -70,7 +67,6 @@
                     <th>Cek Manual</th>
                     <th></th>
                     <th>Status</th>
-                    <th>Revisi</th>
                 </tr>
             </thead>
             <tbody>
@@ -100,29 +96,6 @@
                         <span class="status {{ $document->status }}">
                             {{ $document->status_label }}
                         </span>
-                    </td>
-
-                    <td>
-                        @if($document->note)
-                            <div class="document-note">
-                                <strong>Catatan Admin:</strong><br>
-                                {{ $document->note }}
-                            </div>
-                        @endif
-
-                        @if($canRevise)
-                            <form method="POST" action="{{ route('student.applications.documents.revise', [$studentApplication, $document]) }}" enctype="multipart/form-data" class="revision-upload-form">
-                                @csrf
-                                @method('PATCH')
-
-                                <input type="file" name="revision_file" required>
-                                <button class="btn small primary" type="submit">
-                                    Upload Revisi
-                                </button>
-                            </form>
-                        @else
-                            <small class="help-text">Tidak ada revisi.</small>
-                        @endif
                     </td>
                 </tr>
             @endforeach
