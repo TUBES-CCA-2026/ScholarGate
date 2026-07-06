@@ -86,6 +86,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+const chartLabelColor = isDarkMode ? '#94a3b8' : '#475569';
+const chartGridColor = isDarkMode ? 'rgba(148, 163, 184, 0.12)' : 'rgba(226, 232, 240, 0.6)';
+
 const namaBeasiswa = @json(
     $beasiswa->map(function($item){
         return $item->documentType->name;
@@ -145,7 +149,7 @@ new Chart(document.getElementById('chartBeasiswa'), {
                     padding: 8,
                 },
                 grid: {
-                    color: 'rgba(226, 232, 240, 0.6)',
+                    color: chartGridColor,
                     drawBorder: false,
                 },
                 border: { display: false, dash: [4, 4] },
@@ -191,7 +195,7 @@ new Chart(document.getElementById('chartStatus'), {
                     pointStyle: 'circle',
                     padding: 16,
                     font: { family: 'Inter, sans-serif', size: 12, weight: '600' },
-                    color: '#475569',
+                    color: chartLabelColor,
                 }
             },
             tooltip: {

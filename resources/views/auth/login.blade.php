@@ -9,6 +9,12 @@
     <meta name="color-scheme" content="light">
     <title>Masuk ScholarGate</title>
     <link rel="stylesheet" href="{{ asset('css/scholargate.css') }}?v={{ filemtime(public_path('css/scholargate.css')) }}">
+    <script>
+        // Prevent FOUC
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
 </head>
 <body class="auth-page auth-page--login auth-page--landing-match">
     <main class="auth-layout">
@@ -29,6 +35,10 @@
             </a>
 
             <div class="landing-nav-actions auth-nav-actions">
+                <button id="darkModeToggle" class="theme-toggle" aria-label="Toggle Dark Mode">
+                    <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
                 <a class="landing-btn landing-btn--ghost" href="{{ route('landing') }}">Beranda</a>
                 <a class="landing-btn landing-btn--dark" href="{{ route('register') }}">Daftar</a>
             </div>
@@ -126,6 +136,37 @@
                 button.setAttribute('aria-label', showPassword ? 'Sembunyikan password' : 'Tampilkan password');
             });
         });
+
+        // Dark Mode Logic
+        (() => {
+            const toggleBtn = document.getElementById('darkModeToggle');
+            if (!toggleBtn) return;
+            const sunIcon = toggleBtn.querySelector('.sun-icon');
+            const moonIcon = toggleBtn.querySelector('.moon-icon');
+            
+            const updateIcons = (isDark) => {
+                if (isDark) {
+                    sunIcon.style.display = 'none';
+                    moonIcon.style.display = 'block';
+                } else {
+                    sunIcon.style.display = 'block';
+                    moonIcon.style.display = 'none';
+                }
+            };
+
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            updateIcons(currentTheme === 'dark');
+
+            toggleBtn.addEventListener('click', () => {
+                let targetTheme = 'light';
+                if (document.documentElement.getAttribute('data-theme') !== 'dark') {
+                    targetTheme = 'dark';
+                }
+                document.documentElement.setAttribute('data-theme', targetTheme);
+                localStorage.setItem('theme', targetTheme);
+                updateIcons(targetTheme === 'dark');
+            });
+        })();
     </script>
 </body>
 </html>

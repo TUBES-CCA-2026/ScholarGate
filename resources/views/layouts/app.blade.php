@@ -8,6 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'ScholarGate' }}</title>
     <link rel="stylesheet" href="{{ asset('css/scholargate.css') }}?v={{ filemtime(public_path('css/scholargate.css')) }}">
+    <script>
+        // Prevent FOUC
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
 </head>
 <body class="app-layout">
 @php
@@ -123,7 +129,10 @@
             <button class="mobile-menu-toggle" type="button" aria-label="Buka menu navigasi" aria-controls="mainSidebar" aria-expanded="false" data-sidebar-toggle>
                 <span></span><span></span><span></span>
             </button>
-            <span></span>
+            <button id="darkModeToggle" class="theme-toggle" aria-label="Toggle Dark Mode" style="margin-left: auto; margin-right: 16px;">
+                <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
             @php
                 $user = auth()->user();
                 $isStudent = $user && $user->role === 'student';
@@ -166,14 +175,13 @@
         </header>
 
         <section class="content-area">
-            {{-- Flash message global dari controller. --}}
+            {{-- Toast Container --}}
+            <div id="toastContainer" class="toast-container"></div>
             @if(session('success'))
-                <div class="alert success">{{ session('success') }}</div>
+                <script>document.addEventListener('DOMContentLoaded', () => showToast("{{ session('success') }}", 'success'));</script>
             @endif
             @if($errors->any())
-                <div class="alert danger">
-                    {{ $errors->first() }}
-                </div>
+                <script>document.addEventListener('DOMContentLoaded', () => showToast("{{ $errors->first() }}", 'danger'));</script>
             @endif
             @yield('content')
         </section>
@@ -292,6 +300,65 @@
             closeModal();
         });
     })();
+
+    // Dark Mode Logic
+    (() => {
+        const toggleBtn = document.getElementById('darkModeToggle');
+        if (!toggleBtn) return;
+        const sunIcon = toggleBtn.querySelector('.sun-icon');
+        const moonIcon = toggleBtn.querySelector('.moon-icon');
+        
+        const updateIcons = (isDark) => {
+            if (isDark) {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            } else {
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+            }
+        };
+
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        updateIcons(currentTheme === 'dark');
+
+        toggleBtn.addEventListener('click', () => {
+            let targetTheme = 'light';
+            if (document.documentElement.getAttribute('data-theme') !== 'dark') {
+                targetTheme = 'dark';
+            }
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            localStorage.setItem('theme', targetTheme);
+            updateIcons(targetTheme === 'dark');
+        });
+    })();
+
+    // Toast Logic
+    window.showToast = (message, type = 'success') => {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        let icon = type === 'success' ? '✓' : '⚠';
+        
+        toast.innerHTML = `
+            <div class="toast-icon">${icon}</div>
+            <div class="toast-body">${message}</div>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Trigger animation
+        requestAnimationFrame(() => {
+            toast.classList.add('show');
+        });
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300); // Wait for transition
+        }, 4000);
+    };
 </script>
 </body>
 </html>
