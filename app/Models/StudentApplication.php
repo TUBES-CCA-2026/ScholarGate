@@ -21,18 +21,20 @@ class StudentApplication extends Model
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_APPROVED = 'approved';
     public const STATUS_READY = 'ready_pickup';
+    public const STATUS_REJECTED = 'rejected';
+
     /**
      * Label status utama pengajuan yang ditampilkan di UI.
      */
     public const STATUS_LABELS = [
-    self::STATUS_SUBMITTED => 'Dikirim',
-    self::STATUS_IN_REVIEW => 'Sedang Direview',
-    self::STATUS_REVISION => 'Perlu Revisi',
-    self::STATUS_READY => 'Siap Diambil',
-    self::STATUS_COMPLETED => 'Selesai',
-    self::STATUS_APPROVED => 'Disetujui',
-
-];
+        self::STATUS_SUBMITTED => 'Dikirim',
+        self::STATUS_IN_REVIEW => 'Diproses',
+        self::STATUS_REVISION => 'Diproses',
+        self::STATUS_READY => 'Siap Diambil',
+        self::STATUS_COMPLETED => 'Siap Diambil',
+        self::STATUS_APPROVED => 'Siap Diambil',
+        self::STATUS_REJECTED => 'Ditolak',
+    ];
 
     /**
      * Atribut yang boleh diisi melalui mass assignment.
@@ -102,7 +104,10 @@ class StudentApplication extends Model
 
         $completed = $this->documents
             ->filter(fn (ApplicationDocument $document): bool =>
-                $document->status === ApplicationDocument::STATUS_VALID
+                in_array($document->status, [
+                    ApplicationDocument::STATUS_VALID,
+                    ApplicationDocument::STATUS_READY,
+                ])
             )
             ->count();
 

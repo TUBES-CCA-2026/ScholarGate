@@ -135,30 +135,30 @@
             </div>
         </section>
 
-        <footer class="landing-footer landing-footer--clean" style="border-top: 1px solid #e2e8f0; margin-top: 60px; padding: 40px 0; display: block;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; text-align: left; margin-bottom: 30px;">
-                <div>
-                    <h3 style="font-size: 18px; margin-bottom: 12px; color: #0f172a;">ScholarGate</h3>
-                    <p style="color: #64748b; font-size: 14px; line-height: 1.6;">Layanan portal pengajuan berkas beasiswa terpadu, membantu mempermudah pendaftaran dan monitoring status berkas mahasiswa.</p>
+        <footer class="landing-footer-new">
+            <div class="landing-footer-grid">
+                <div class="landing-footer-col">
+                    <h3 class="landing-footer-title landing-footer-title--brand">ScholarGate</h3>
+                    <p>Layanan portal pengajuan berkas beasiswa terpadu, membantu mempermudah pendaftaran dan monitoring status berkas mahasiswa.</p>
                 </div>
-                <div>
-                    <h3 style="font-size: 16px; margin-bottom: 12px; color: #0f172a;">Navigasi</h3>
-                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 14px; line-height: 2;">
-                        <li><a href="#fitur" style="color: #64748b;">Fitur Utama</a></li>
-                        <li><a href="#alur" style="color: #64748b;">Alur Pengajuan</a></li>
-                        <li><a href="{{ route('login') }}" style="color: #64748b;">Masuk Akun</a></li>
+                <div class="landing-footer-col">
+                    <h3 class="landing-footer-title">Navigasi</h3>
+                    <ul class="landing-footer-links">
+                        <li><a href="#fitur">Fitur Utama</a></li>
+                        <li><a href="#alur">Alur Pengajuan</a></li>
+                        <li><a href="{{ route('login') }}">Masuk Akun</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h3 style="font-size: 16px; margin-bottom: 12px; color: #0f172a;">Hubungi Kami</h3>
-                    <p style="color: #64748b; font-size: 14px; line-height: 1.6;">
+                <div class="landing-footer-col">
+                    <h3 class="landing-footer-title">Hubungi Kami</h3>
+                    <p>
                         Email: info@scholargate.id<br>
                         Telepon: +62 812 4145 6546<br>
                         Gedung Rektorat Lt. 2, Kampus Pusat
                     </p>
                 </div>
             </div>
-            <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; text-align: center; color: #94a3b8; font-size: 14px;">
+            <div class="landing-footer-bottom">
                 <p>&copy; {{ date('Y') }} ScholarGate. Semua hak cipta dilindungi.</p>
             </div>
         </footer>

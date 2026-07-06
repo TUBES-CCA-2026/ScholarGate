@@ -64,13 +64,11 @@ class AdminApplicationController extends Controller
 
         return back()->with('success', 'Status pengajuan berhasil diperbarui.');
     }
-
     /**
-     * Memperbarui status satu dokumen pada pengajuan tertentu.
-     *
-     * Guard clause memastikan dokumen yang dikirim pada URL benar-benar milik
-     * pengajuan yang sedang dibuka sehingga route model binding tidak dapat
-     * dipakai untuk mengubah dokumen milik pengajuan lain.
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\StudentApplication $studentApplication
+     * @param \App\Models\ApplicationDocument $applicationDocument
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function updateDocument(
         Request $request,
@@ -82,12 +80,28 @@ class AdminApplicationController extends Controller
         $validated = $request->validate([
             'status' => ['required', 'in:' . self::DOCUMENT_STATUSES],
             'note' => ['nullable', 'string', 'max:1000'],
+            'document_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,doc,docx', 'max:4096'],
         ]);
 
-        $applicationDocument->update($validated);
-        $this->markApplicationAsRevisionWhenDocumentIsInvalid($studentApplication, $validated);
+        if ($request->hasFile('document_file')) {
+            if ($applicationDocument->file_path) {
+                Storage::disk('public')->delete($applicationDocument->file_path);
+            }
 
-        return back()->with('success', 'Status dokumen berhasil diperbarui.');
+            $path = $request->file('document_file')->store('applications/documents', 'public');
+            $applicationDocument->file_path = $path;
+            $applicationDocument->original_name = $request->file('document_file')->getClientOriginalName();
+            $applicationDocument->status = 'ready'; // automatically set to Ready
+        } else {
+            $applicationDocument->status = $validated['status'];
+        }
+
+        $applicationDocument->note = $validated['note'] ?? null;
+        $applicationDocument->save();
+
+        $this->markApplicationAsRevisionWhenDocumentIsInvalid($studentApplication, ['status' => $applicationDocument->status]);
+
+        return back()->with('success', 'Dokumen berhasil diperbarui.');
     }
 
     /**

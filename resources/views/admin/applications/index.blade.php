@@ -6,11 +6,9 @@
     @php
         $statusOptions = [
             'submitted' => 'Dikirim',
-            'in_review' => 'Sedang Direview',
-            'revision' => 'Perlu Revisi',
-            'approved' => 'Disetujui',
+            'in_review' => 'Diproses',
             'ready_pickup' => 'Siap Diambil',
-            'completed' => 'Selesai',
+            'rejected' => 'Ditolak',
         ];
     @endphp
     <div class="page-head-row">
@@ -53,7 +51,7 @@
                             <td>{{ $application->user->name }}</td>
                             <td>{{ $application->user->nim }}</td>
                             <td>{{ $application->documentType->name }}</td>
-                            <td>{{ $application->submitted_at?->format('d M Y') }}</td>
+                             <td>{{ ($application->submitted_at ?? $application->created_at)->format('d M Y') }}</td>
                             <td><span class="status {{ $application->status }}">{{ $application->status_label }}</span>
                             </td>
                             <td><a class="text-link"

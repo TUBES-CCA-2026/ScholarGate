@@ -5,10 +5,11 @@
 @section('content')
 @php
     $statusOptions = [
-    'in_review' => 'Sedang Direview',
-    'ready_pickup' => 'Siap Diambil',
-    'completed' => 'Selesai',
-];
+        'submitted' => 'Dikirim',
+        'in_review' => 'Diproses',
+        'ready_pickup' => 'Siap Diambil',
+        'rejected' => 'Ditolak',
+    ];
 @endphp
 <div class="page-head-row application-detail-header">
     <div>
@@ -65,11 +66,9 @@
 
     @php
         $documentStatusOptions = [
-            'missing' => 'Belum Siap',
-            'submitted' => 'Dikirim',
-            'valid' => 'Siap',
-            'invalid' => 'Perlu Revisi',
+            'missing' => 'Belum Diunggah',
             'ready' => 'Siap Diambil',
+            'invalid' => 'Dibatalkan',
         ];
     @endphp
 
@@ -78,8 +77,6 @@
             <thead>
                 <tr>
                     <th>Syarat</th>
-                    <th>Cek Manual</th>
-                    <th></th>
                     <th>Status</th>
                     <th>Catatan & Aksi</th>
                 </tr>
@@ -93,11 +90,6 @@
 
                 <tr>
                     <td>{{ $document->requirement->name }}</td>
-
-
-
-                    <td>{{ $document->is_checked_manual ? 'Ya' : 'Tidak' }}</td>
-                    <td></td>
                     <td>
                         <span class="status {{ $document->status }}">
                             {{ $document->status_label }}
@@ -105,17 +97,24 @@
                     </td>
 
                     <td>
-                        <form method="POST" action="{{ route('admin.applications.documents.update', [$studentApplication, $document]) }}" class="doc-review-form">
+                        <form method="POST" action="{{ route('admin.applications.documents.update', [$studentApplication, $document]) }}" class="doc-review-form" enctype="multipart/form-data" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                             @csrf
                             @method('PATCH')
 
-                            <select name="status" required>
+                            <select name="status" required style="width: auto;">
                                 @foreach($documentStatusOptions as $value => $label)
                                     <option value="{{ $value }}" {{ $document->status === $value ? 'selected' : '' }}>
                                         {{ $label }}
                                     </option>
                                 @endforeach
                             </select>
+
+                            <input type="file" name="document_file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="font-size: 12px; max-width: 180px;">
+
+                            @if($document->file_path)
+                                <a class="btn small neutral" href="{{ asset('storage/' . $document->file_path) }}" target="_blank" style="padding: 6px 10px;">Lihat File</a>
+                            @endif
+
                             <button class="btn small primary" type="submit">
                                 Simpan
                             </button>

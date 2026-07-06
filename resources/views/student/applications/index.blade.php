@@ -29,7 +29,7 @@
                 <tr>
                     <td>{{ $application->application_code }}</td>
                     <td>{{ $application->documentType->name }}</td>
-                    <td>{{ $application->submitted_at?->format('d M Y') }}</td>
+                    <td>{{ ($application->submitted_at ?? $application->created_at)->format('d M Y') }}</td>
                     <td><span class="status {{ $application->status }}">{{ $application->status_label }}</span></td>
                     <td>
                         <div class="progress"><span style="width: {{ $application->completionPercentage() }}%"></span></div>

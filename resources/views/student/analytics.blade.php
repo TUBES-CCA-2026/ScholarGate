@@ -13,38 +13,32 @@
 
 <div class="panel mt-24">
     <h2>Catatan Progres</h2>
-    <p>Menu ini menampilkan ringkasan status dokumen mahasiswa. Persentase kelengkapan dihitung dari jumlah syarat yang sudah diunggah atau dicentang manual.</p>
+    <p>Ringkasan jumlah pendaftar per beasiswa. Setiap bar memiliki warna unik sesuai jenis beasiswanya.</p>
 </div>
 
-<div class="analytics-charts-grid">
-    <div class="analytics-chart-card">
-        <div class="analytics-chart-header">
+{{-- Full-width chart card with scrollable bar area --}}
+<div class="analytics-chart-card mt-24">
+    <div class="analytics-chart-header">
+        <div>
             <h3>Analitik Beasiswa</h3>
             <span class="analytics-chart-subtitle">Jumlah pendaftar per beasiswa</span>
         </div>
-        <div class="analytics-chart-body">
+    </div>
+
+    {{-- Scrollable wrapper — chart expands to fit all bars --}}
+    <div class="analytics-chart-scroll-wrap">
+        <div class="analytics-chart-inner" id="chartWrap">
             <canvas id="chartBeasiswa"></canvas>
         </div>
     </div>
 
-    <div class="analytics-chart-card">
-        <div class="analytics-chart-header">
-            <h3>Distribusi Status</h3>
-            <span class="analytics-chart-subtitle">Persentase status pengajuan Anda</span>
-        </div>
-        <div class="analytics-chart-body analytics-chart-body--donut">
-            <canvas id="chartStatus"></canvas>
-        </div>
-    </div>
+    {{-- Legend below chart --}}
+    <div id="chartLegend" class="analytics-legend-row"></div>
 </div>
 
 <style>
-.analytics-charts-grid {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr;
-    gap: 20px;
-    margin-top: 24px;
-}
+.mt-24 { margin-top: 24px; }
+
 .analytics-chart-card {
     background: #fff;
     border: 1px solid #e5e9f0;
@@ -53,6 +47,9 @@
     box-shadow: 0 4px 24px rgba(15, 23, 42, 0.04);
 }
 .analytics-chart-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
     margin-bottom: 20px;
 }
 .analytics-chart-header h3 {
@@ -66,20 +63,98 @@
     color: #94a3b8;
     font-weight: 500;
 }
-.analytics-chart-body {
+
+/* Scrollable container */
+.analytics-chart-scroll-wrap {
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: 12px;
+    /* subtle scrollbar */
+}
+.analytics-chart-scroll-wrap::-webkit-scrollbar {
+    height: 5px;
+}
+.analytics-chart-scroll-wrap::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+.analytics-chart-scroll-wrap::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+/* Inner div grows with number of bars — 80px per bar, min 100% */
+.analytics-chart-inner {
     position: relative;
-    height: 280px;
+    height: 300px;
+    min-width: 100%;
 }
-.analytics-chart-body--donut {
-    height: 260px;
+
+/* Legend row — wraps chips below the chart */
+.analytics-legend-row {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e9f0;
 }
-@media (max-width: 980px) {
-    .analytics-charts-grid {
-        grid-template-columns: 1fr;
-    }
+.analytics-legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+.analytics-legend-chip:hover {
+    background: #f1f5f9;
+}
+.analytics-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.analytics-legend-count {
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+/* Dark mode */
+:root[data-theme="dark"] .analytics-chart-card {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: none;
+}
+:root[data-theme="dark"] .analytics-chart-header h3 {
+    color: #f8fafc;
+}
+:root[data-theme="dark"] .analytics-chart-scroll-wrap::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+:root[data-theme="dark"] .analytics-chart-scroll-wrap::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+:root[data-theme="dark"] .analytics-legend-row {
+    border-top-color: #334155;
+}
+:root[data-theme="dark"] .analytics-legend-chip {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+:root[data-theme="dark"] .analytics-legend-chip:hover {
+    background: #1e3a5f;
+}
+:root[data-theme="dark"] .analytics-legend-count {
+    color: #64748b;
 }
 </style>
 
@@ -87,33 +162,68 @@
 
 <script>
 const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
-const chartLabelColor = isDarkMode ? '#94a3b8' : '#475569';
-const chartGridColor = isDarkMode ? 'rgba(148, 163, 184, 0.12)' : 'rgba(226, 232, 240, 0.6)';
+const chartGridColor  = isDarkMode ? 'rgba(148,163,184,0.12)' : 'rgba(226,232,240,0.7)';
+const chartTickColor  = isDarkMode ? '#94a3b8' : '#64748b';
 
 const namaBeasiswa = @json(
-    $beasiswa->map(function($item){
-        return $item->documentType->name;
-    })
+    $beasiswa->map(fn($item) => $item->documentType->name)
 );
+const jumlah = @json($beasiswa->pluck('total'));
 
-const jumlah = @json(
-    $beasiswa->pluck('total')
-);
+// 10-color vivid palette
+const palette = [
+    { bg:'rgba(99,102,241,0.80)',  border:'rgba(99,102,241,1)'   },
+    { bg:'rgba(20,184,166,0.80)',  border:'rgba(20,184,166,1)'   },
+    { bg:'rgba(245,158,11,0.80)',  border:'rgba(245,158,11,1)'   },
+    { bg:'rgba(239,68,68,0.80)',   border:'rgba(239,68,68,1)'    },
+    { bg:'rgba(16,185,129,0.80)',  border:'rgba(16,185,129,1)'   },
+    { bg:'rgba(168,85,247,0.80)',  border:'rgba(168,85,247,1)'   },
+    { bg:'rgba(236,72,153,0.80)',  border:'rgba(236,72,153,1)'   },
+    { bg:'rgba(59,130,246,0.80)',  border:'rgba(59,130,246,1)'   },
+    { bg:'rgba(251,146,60,0.80)',  border:'rgba(251,146,60,1)'   },
+    { bg:'rgba(52,211,153,0.80)',  border:'rgba(52,211,153,1)'   },
+];
 
-// Modern Bar Chart
+const barBg     = namaBeasiswa.map((_,i) => palette[i % palette.length].bg);
+const barBorder = namaBeasiswa.map((_,i) => palette[i % palette.length].border);
+
+// --- Resize inner canvas width: 80px per bar, minimum fills container ---
+const MIN_BAR_WIDTH = 80; // px per bar
+const wrap    = document.getElementById('chartWrap');
+const minW    = Math.max(wrap.parentElement.clientWidth - 48, namaBeasiswa.length * MIN_BAR_WIDTH);
+wrap.style.width = minW + 'px';
+
+// --- Build legend chips ---
+const legendEl = document.getElementById('chartLegend');
+if (namaBeasiswa.length === 0) {
+    legendEl.innerHTML = '<p style="color:#94a3b8;font-size:13px;">Belum ada data beasiswa.</p>';
+} else {
+    namaBeasiswa.forEach((name, i) => {
+        const color = palette[i % palette.length].border;
+        const chip  = document.createElement('div');
+        chip.className = 'analytics-legend-chip';
+        chip.innerHTML  = `<div class="analytics-legend-dot" style="background:${color}"></div>
+                           <span>${name}</span>
+                           <span class="analytics-legend-count">${jumlah[i]}</span>`;
+        legendEl.appendChild(chip);
+    });
+}
+
+// --- Bar Chart ---
 new Chart(document.getElementById('chartBeasiswa'), {
     type: 'bar',
     data: {
         labels: namaBeasiswa,
         datasets: [{
-            label: 'Jumlah Pendaftar',
+            label: 'Pendaftar',
             data: jumlah,
-            backgroundColor: 'rgba(99, 102, 241, 0.15)',
-            borderColor: 'rgba(99, 102, 241, 1)',
-            borderWidth: 2,
-            borderRadius: 10,
+            backgroundColor: barBg,
+            borderColor: barBorder,
+            hoverBackgroundColor: barBorder,
+            borderWidth: 0,
+            borderRadius: 12,
             borderSkipped: false,
-            hoverBackgroundColor: 'rgba(99, 102, 241, 0.35)',
+            barThickness: 44,
         }]
     },
     options: {
@@ -122,90 +232,38 @@ new Chart(document.getElementById('chartBeasiswa'), {
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: '#0f172a',
-                titleFont: { family: 'Inter, sans-serif', weight: '700', size: 13 },
-                bodyFont: { family: 'Inter, sans-serif', size: 12 },
-                padding: 12,
-                cornerRadius: 10,
-                displayColors: false,
+                backgroundColor: isDarkMode ? '#1e293b' : '#0f172a',
+                titleFont : { family:'Inter,sans-serif', weight:'700', size:13 },
+                bodyFont  : { family:'Inter,sans-serif', size:12 },
+                padding     : 14,
+                cornerRadius: 12,
+                displayColors: true,
+                callbacks: {
+                    label: (item) => `  ${item.raw} pendaftar`,
+                }
             }
         },
         scales: {
             x: {
-                grid: { display: false },
+                grid : { display: false },
                 ticks: {
-                    font: { family: 'Inter, sans-serif', size: 12, weight: '600' },
-                    color: '#64748b',
-                    maxRotation: 0,
+                    font        : { family:'Inter,sans-serif', size:11, weight:'600' },
+                    color       : chartTickColor,
+                    maxRotation : 30,
+                    minRotation : 0,
                 },
                 border: { display: false },
             },
             y: {
                 beginAtZero: true,
                 ticks: {
-                    font: { family: 'Inter, sans-serif', size: 12 },
-                    color: '#94a3b8',
+                    font    : { family:'Inter,sans-serif', size:12 },
+                    color   : isDarkMode ? '#64748b' : '#94a3b8',
                     stepSize: 1,
-                    padding: 8,
+                    padding : 8,
                 },
-                grid: {
-                    color: chartGridColor,
-                    drawBorder: false,
-                },
-                border: { display: false, dash: [4, 4] },
-            }
-        }
-    }
-});
-
-// Donut Chart for Status Distribution
-const statusData = {
-    submitted: {{ $summary['submitted'] }},
-    in_review: {{ $summary['in_review'] }},
-    approved: {{ $summary['approved'] }},
-    other: Math.max(0, {{ $summary['total'] }} - {{ $summary['submitted'] }} - {{ $summary['in_review'] }} - {{ $summary['approved'] }}),
-};
-
-const hasData = Object.values(statusData).some(v => v > 0);
-
-new Chart(document.getElementById('chartStatus'), {
-    type: 'doughnut',
-    data: {
-        labels: ['Dikirim', 'Direview', 'Disetujui', 'Lainnya'],
-        datasets: [{
-            data: hasData
-                ? [statusData.submitted, statusData.in_review, statusData.approved, statusData.other]
-                : [1],
-            backgroundColor: hasData
-                ? ['#6366f1', '#f59e0b', '#10b981', '#e2e8f0']
-                : ['#f1f5f9'],
-            borderWidth: 0,
-            hoverOffset: 6,
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '72%',
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: {
-                    usePointStyle: true,
-                    pointStyle: 'circle',
-                    padding: 16,
-                    font: { family: 'Inter, sans-serif', size: 12, weight: '600' },
-                    color: chartLabelColor,
-                }
-            },
-            tooltip: {
-                backgroundColor: '#0f172a',
-                titleFont: { family: 'Inter, sans-serif', weight: '700', size: 13 },
-                bodyFont: { family: 'Inter, sans-serif', size: 12 },
-                padding: 12,
-                cornerRadius: 10,
-                displayColors: true,
-                enabled: hasData,
+                grid  : { color: chartGridColor },
+                border: { display: false, dash: [4,4] },
             }
         }
     }
