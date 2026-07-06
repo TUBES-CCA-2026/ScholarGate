@@ -27,7 +27,7 @@
 
         <div>
             <label for="name">Nama Lengkap</label>
-            <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required>
+            <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" pattern="[a-zA-Z\s.,'\-]+" title="Nama lengkap hanya boleh berisi huruf, spasi, titik, koma, tanda petik, dan hubung." required>
         </div>
 
         <div>
@@ -38,18 +38,22 @@
         <div class="grid-2">
             <div>
                 <label for="nim">NIM</label>
-                <input type="text" name="nim" id="nim" value="{{ old('nim', $user->nim) }}">
+                <input type="text" name="nim" id="nim" value="{{ old('nim', $user->nim) }}" pattern="[0-9]+" title="NIM hanya boleh berisi angka.">
             </div>
 
             <div>
                 <label for="kelas">Kelas</label>
-                <input type="text" name="kelas" id="kelas" value="{{ old('kelas', $user->kelas) }}">
+                <x-kelas-selector value="{{ $user->kelas }}" required="true" />
             </div>
         </div>
 
         <div>
             <label for="program_studi">Program Studi</label>
-            <input type="text" name="program_studi" id="program_studi" value="{{ old('program_studi', $user->program_studi) }}">
+            <select name="program_studi" id="program_studi" required>
+                <option value="">Pilih Program Studi</option>
+                <option value="Teknik Informatika" {{ old('program_studi', $user->program_studi) === 'Teknik Informatika' ? 'selected' : '' }}>Teknik Informatika</option>
+                <option value="Sistem Informasi" {{ old('program_studi', $user->program_studi) === 'Sistem Informasi' ? 'selected' : '' }}>Sistem Informasi</option>
+            </select>
         </div>
 
         <div class="grid-2">
@@ -60,7 +64,7 @@
 
             <div>
                 <label for="phone">Nomor Telepon</label>
-                <input type="text" name="phone" id="phone" value="{{ old('phone', $user->phone) }}">
+                <input type="tel" name="phone" id="phone" value="{{ old('phone', $user->phone) }}" pattern="[0-9]{10,15}" title="Nomor telepon harus berupa 10 hingga 15 digit angka saja.">
             </div>
         </div>
 

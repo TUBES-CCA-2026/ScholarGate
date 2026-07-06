@@ -12,7 +12,7 @@
 </div>
 
 <div class="form-card">
-    <form method="POST" action="{{ route('student.applications.store') }}" enctype="multipart/form-data" class="form-stack">
+    <form method="POST" action="{{ route('student.applications.store') }}" class="form-stack">
         @csrf
 
         <div class="form-section-title">DATA MAHASISWA</div>
@@ -96,31 +96,6 @@
         return element;
     }
 
-    function createManualCheck(requirementId) {
-        const label = document.createElement('label');
-        label.className = 'checkbox-line';
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.name = 'manual_checks[]';
-        checkbox.value = requirementId;
-
-        label.appendChild(checkbox);
-        label.append(' Centang jika berkas diproses manual tanpa unggah file');
-
-        return label;
-    }
-
-    function createFileInput(requirementId, needsFile) {
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.name = `requirement_files[${requirementId}]`;
-        fileInput.accept = '.pdf,.jpg,.jpeg,.png,.doc,.docx';
-        fileInput.disabled = !needsFile;
-
-        return fileInput;
-    }
-
     function renderRequirements() {
         box.innerHTML = '';
 
@@ -134,7 +109,7 @@
             return;
         }
 
-        box.appendChild(createTextElement('div', 'BERKAS YANG DIBUTUHKAN', 'form-section-title'));
+        box.appendChild(createTextElement('div', 'BERKAS YANG AKAN DIPROSES', 'form-section-title'));
 
         requirements.forEach((item) => {
             const wrapper = document.createElement('div');
@@ -142,7 +117,9 @@
 
             const detail = document.createElement('div');
             detail.appendChild(createTextElement('strong', item.name));
-      
+            if (item.description) {
+                detail.appendChild(createTextElement('p', item.description));
+            }
 
             wrapper.appendChild(detail);
             box.appendChild(wrapper);

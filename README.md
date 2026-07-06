@@ -1,6 +1,12 @@
 # ScholarGate
 
-ScholarGate adalah aplikasi Laravel untuk pengajuan berkas mahasiswa dan pengelolaan beasiswa atau program akademik oleh admin prodi.
+ScholarGate adalah portal layanan akademik (Layanan Akademik Program Studi) yang memfasilitasi mahasiswa dalam **mengajukan permohonan berkas keperluan beasiswa** kepada Admin Program Studi.
+
+**Alur Kerja (Workflow) Utama:**
+- Mahasiswa **tidak mengunggah (upload) berkas apapun** ke dalam sistem ini.
+- Mahasiswa hanya membuat permohonan/pengajuan berkas (misal: Surat Rekomendasi, Surat Keterangan Mahasiswa Aktif, dll) yang dibutuhkan untuk mendaftar beasiswa.
+- **Admin Prodi** yang akan memproses pengajuan tersebut, lalu menyediakan (mengunggah) dokumen final hasil cetakan prodi ke dalam sistem.
+- Mahasiswa kemudian dapat mengunduh dokumen yang telah disediakan oleh Admin Prodi.
 
 Versi ini sudah diperbarui dengan:
 

@@ -30,7 +30,7 @@
                 $isBookmarked = $bookmarkedIds->contains($type->id);
             @endphp
 
-            <div class="list-card information-master-card">
+            <div class="list-card information-master-card" id="scholarship-{{ $type->id }}">
                 @if($type->image_path)
                     <img
                         class="information-master-image"

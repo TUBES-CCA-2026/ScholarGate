@@ -8,8 +8,8 @@
 @section('content')
     <div class="page-head-row">
         <div>
-            <h1>Recycle Bin Pengajuan</h1>
-            <p>Pengajuan yang dihapus dari daftar utama tersimpan sementara di sini sebelum dihapus permanen.</p>
+            <h1>Arsip Terhapus</h1>
+            <p>Pengajuan yang dihapus sementara disimpan di sini sebelum dihapus permanen.</p>
         </div>
     </div>
 
@@ -49,32 +49,32 @@
                             <td>
                                 <div class="table-actions">
                                     <form method="POST"
-                                        action="{{ route('admin.applications.restore', $application->id) }}"
-                                        onsubmit="return confirm('Pulihkan pengajuan ini ke daftar utama?')">
-                                        @csrf
-                                        @method('PATCH')
+                                         action="{{ route('admin.applications.restore', $application->id) }}"
+                                         data-confirm="Apakah Anda yakin ingin memulihkan pengajuan ini ke daftar utama?">
+                                         @csrf
+                                         @method('PATCH')
 
-                                        <button class="text-link" type="submit">
-                                            Pulihkan
-                                        </button>
-                                    </form>
+                                         <button class="text-link" type="submit">
+                                             Pulihkan
+                                         </button>
+                                     </form>
 
-                                    <form method="POST"
-                                        action="{{ route('admin.applications.force-delete', $application->id) }}"
-                                        onsubmit="return confirm('Hapus pengajuan ini secara permanen? Tindakan ini tidak dapat dibatalkan.')">
-                                        @csrf
-                                        @method('DELETE')
+                                     <form method="POST"
+                                         action="{{ route('admin.applications.force-delete', $application->id) }}"
+                                         data-confirm="Apakah Anda yakin ingin menghapus pengajuan ini secara PERMANEN? Tindakan ini tidak dapat dibatalkan!">
+                                         @csrf
+                                         @method('DELETE')
 
-                                        <button class="text-link text-danger" type="submit">
-                                            Hapus Permanen
-                                        </button>
-                                    </form>
+                                         <button class="text-link text-danger" type="submit">
+                                             Hapus Permanen
+                                         </button>
+                                     </form>
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7">Recycle bin masih kosong.</td>
+                            <td colspan="7">Arsip terhapus masih kosong.</td>
                         </tr>
                     @endforelse
                 </tbody>

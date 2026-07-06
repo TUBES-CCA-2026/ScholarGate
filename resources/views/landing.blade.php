@@ -69,16 +69,18 @@
                         <span></span><span></span><span></span>
                     </div>
                     <div class="landing-dashboard-profile">
-                        <div class="landing-avatar-mini">S</div>
+                        <div class="landing-avatar-mini" style="background: #04051a; color: #ffd65a; display: flex; align-items: center; justify-content: center;">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+                        </div>
                         <div>
                             <strong>Pengajuan Beasiswa</strong>
                             <small>Dokumen sedang diverifikasi admin.</small>
                         </div>
                     </div>
                     <div class="landing-progress-list">
-                        <div><span>Profil Mahasiswa</span><strong>Lengkap</strong></div>
-                        <div><span>Upload Pengajuan Berkas</span><strong>Diproses</strong></div>
-                        <div><span>Review Admin</span><strong>Menunggu</strong></div>
+                        <div><span>Profil Mahasiswa</span><strong style="color: #117a4d;">Lengkap</strong></div>
+                        <div><span>Upload Pengajuan Berkas</span><strong style="color: #273b88;">Diproses</strong></div>
+                        <div><span>Review Admin</span><strong style="color: #8a6200;">Menunggu</strong></div>
                     </div>
                     <div class="landing-progress-bar"><span></span></div>
                 </article>
@@ -123,8 +125,32 @@
             </div>
         </section>
 
-        <footer class="landing-footer landing-footer--clean">
-            <p>© {{ date('Y') }} ScholarGate.</p>
+        <footer class="landing-footer landing-footer--clean" style="border-top: 1px solid #e2e8f0; margin-top: 60px; padding: 40px 0; display: block;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; text-align: left; margin-bottom: 30px;">
+                <div>
+                    <h3 style="font-size: 18px; margin-bottom: 12px; color: #0f172a;">ScholarGate</h3>
+                    <p style="color: #64748b; font-size: 14px; line-height: 1.6;">Layanan portal pengajuan berkas beasiswa terpadu, membantu mempermudah pendaftaran dan monitoring status berkas mahasiswa.</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 16px; margin-bottom: 12px; color: #0f172a;">Navigasi</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 14px; line-height: 2;">
+                        <li><a href="#fitur" style="color: #64748b;">Fitur Utama</a></li>
+                        <li><a href="#alur" style="color: #64748b;">Alur Pengajuan</a></li>
+                        <li><a href="{{ route('login') }}" style="color: #64748b;">Masuk Akun</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="font-size: 16px; margin-bottom: 12px; color: #0f172a;">Hubungi Kami</h3>
+                    <p style="color: #64748b; font-size: 14px; line-height: 1.6;">
+                        Email: info@scholargate.id<br>
+                        Telepon: +62 812 4145 6546<br>
+                        Gedung Rektorat Lt. 2, Kampus Pusat
+                    </p>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; text-align: center; color: #94a3b8; font-size: 14px;">
+                <p>&copy; {{ date('Y') }} ScholarGate. Semua hak cipta dilindungi.</p>
+            </div>
         </footer>
     </main>
 </body>

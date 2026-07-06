@@ -18,7 +18,7 @@
 
     <div class="page-actions">
 
-        <form method="POST" action="{{ route('admin.applications.destroy', $studentApplication) }}" onsubmit="return confirm('Pindahkan pengajuan ini ke recycle bin?')">
+        <form method="POST" action="{{ route('admin.applications.destroy', $studentApplication) }}" data-confirm="Apakah Anda yakin ingin memindahkan pengajuan ini ke arsip terhapus?">
             @csrf
             @method('DELETE')
 
@@ -65,8 +65,11 @@
 
     @php
         $documentStatusOptions = [
-            'valid' => 'Siap',
             'missing' => 'Belum Siap',
+            'submitted' => 'Dikirim',
+            'valid' => 'Siap',
+            'invalid' => 'Perlu Revisi',
+            'ready' => 'Siap Diambil',
         ];
     @endphp
 

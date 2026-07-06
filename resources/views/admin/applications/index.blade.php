@@ -7,8 +7,10 @@
         $statusOptions = [
             'submitted' => 'Dikirim',
             'in_review' => 'Sedang Direview',
-            'completed' => 'Selesai',
+            'revision' => 'Perlu Revisi',
+            'approved' => 'Disetujui',
             'ready_pickup' => 'Siap Diambil',
+            'completed' => 'Selesai',
         ];
     @endphp
     <div class="page-head-row">

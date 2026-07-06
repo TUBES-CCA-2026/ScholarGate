@@ -62,35 +62,25 @@
         <table>
             <thead>
                 <tr>
-                    <th>Syarat</th>
-                    <td></td>
-                    <th>Cek Manual</th>
-                    <th></th>
+                    <th>Dokumen</th>
+                    <th>Berkas Tersedia</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
             @foreach($studentApplication->documents as $document)
-                @php
-                    $canRevise = $studentApplication->status === 'revision'
-                        && in_array($document->status, ['invalid', 'missing'], true);
-                @endphp
-
                 <tr>
                     <td>{{ $document->requirement->name }}</td>
 
                     <td>
                         @if($document->file_path)
-                            <a class="text-link" href="{{ asset('storage/'.$document->file_path) }}" target="_blank">
-                                {{ $document->original_name }}
+                            <a class="btn small neutral" href="{{ asset('storage/'.$document->file_path) }}" target="_blank" download>
+                                Unduh
                             </a>
                         @else
-
+                            <span style="color: #6c757d; font-size: 13px;">Belum tersedia</span>
                         @endif
                     </td>
-
-                    <td>{{ $document->is_checked_manual ? 'Ya' : 'Tidak' }}</td>
-                    <td></td>
 
                     <td>
                         <span class="status {{ $document->status }}">

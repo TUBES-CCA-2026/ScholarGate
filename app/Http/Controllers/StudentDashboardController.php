@@ -113,7 +113,13 @@ class StudentDashboardController extends Controller
     public function updateProfile(Request $request): RedirectResponse
     {
         $user = $request->user();
-        $validated = $request->validate($this->profileRules($user->id));
+        $validated = $request->validate($this->profileRules($user->id), [
+            'name.regex' => 'Nama lengkap hanya boleh berisi huruf, spasi, dan tanda baca standar.',
+            'nim.regex' => 'NIM hanya boleh berisi angka.',
+            'phone.regex' => 'Nomor HP hanya boleh berisi angka.',
+            'phone.min' => 'Nomor HP minimal 10 digit.',
+            'phone.max' => 'Nomor HP maksimal 15 digit.',
+        ]);
 
         if ($request->hasFile('photo')) {
             $this->deletePublicFile($user->photo_path);
@@ -153,13 +159,13 @@ class StudentDashboardController extends Controller
     private function profileRules(int $userId): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s.,\'-]+$/'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
-            'nim' => ['nullable', 'string', 'max:50', Rule::unique('users', 'nim')->ignore($userId)],
+            'nim' => ['nullable', 'string', 'max:50', 'regex:/^[0-9]+$/', Rule::unique('users', 'nim')->ignore($userId)],
             'program_studi' => ['nullable', 'string', 'max:255'],
             'kelas' => ['nullable', 'string', 'max:100'],
             'ipk' => ['nullable', 'numeric', 'min:0', 'max:4'],
-            'phone' => ['nullable', 'string', 'max:30'],
+            'phone' => ['nullable', 'string', 'regex:/^[0-9]+$/', 'min:10', 'max:15'],
             'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
     }

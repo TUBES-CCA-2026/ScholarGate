@@ -76,7 +76,7 @@
                                     <rect x="3" y="5" width="18" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
                                     <path d="m5 8 7 5 7-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
-                                <input id="email" type="email" name="email" value="{{ old('email') }}" placeholder="masukkan email anda" autocomplete="email" required>
+                                <input id="email" type="email" name="email" value="{{ old('email', Cookie::get('remember_email')) }}" placeholder="masukkan email anda" autocomplete="email" required>
                             </div>
                         </div>
 
@@ -102,7 +102,7 @@
 
                         <div class="auth-form__options">
                             <label class="auth-check">
-                                <input type="checkbox" name="remember" value="1">
+                                <input type="checkbox" name="remember" value="1" {{ Cookie::has('remember_email') ? 'checked' : '' }}>
                                 <span>Remember me</span>
                             </label>
                             <a href="{{ route('register') }}">Buat akun</a>

@@ -30,24 +30,25 @@
             <strong>{{ $bookmarkedCount }}</strong>
             <small>Pengajuan tersimpan</small>
         </div>
+    
     </div>
 </section>
 
 <section class="dashboard-summary-row">
     <article class="dashboard-summary-card">
         <span>Langkah 1</span>
-        <strong>Pilih Beasiswa</strong>
-        <p>Baca informasi dan pastikan dokumen yang diminta sudah siap.</p>
+        <strong>Informasi Beasiswa</strong>
+        <p>Mahasiswa dapat membaca informasi, ketentuan, dan dokumen yang perlu disiapkan.</p>
     </article>
     <article class="dashboard-summary-card">
         <span>Langkah 2</span>
         <strong>Upload Pengajuan Berkas</strong>
-        <p>Mengirim pengajuan berkas yang dibutuhkan.</p>
+        <p>Pengajuan berkas dikirim oleh sistem langsung ke Prodi.</p>
     </article>
     <article class="dashboard-summary-card">
         <span>Langkah 3</span>
-        <strong>Pantau Status</strong>
-        <p>Mengubah status berkas yang diajukan</p>
+        <strong>Review Admin</strong>
+        <p>Admin dapat memeriksa, memberi catatan revisi, dan mengubah status pengajuan.</p>
     </article>
 </section>
 
@@ -65,7 +66,7 @@
             $isBookmarked = $bookmarkedIds->contains($type->id);
         @endphp
 
-        <article class="opportunity-card opportunity-card--dashboard">
+        <article class="opportunity-card opportunity-card--dashboard" style="cursor: pointer; transition: transform 0.2s;" onclick="window.location='{{ route('student.information') }}#scholarship-{{ $type->id }}'" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
             <div class="opportunity-image {{ strtolower(str_replace(' ', '-', $type->category)) }}">
                 @if($type->image_path)
                     <img src="{{ asset('storage/' . $type->image_path) }}" alt="Foto {{ $type->name }}">
@@ -80,12 +81,12 @@
                         <form method="POST" action="{{ route('student.bookmarks.destroy', $type) }}" class="bookmark-inline-form">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="bookmark-icon-button active" aria-label="Hapus {{ $type->name }} dari bookmark">♥</button>
+                            <button type="submit" class="bookmark-icon-button active" aria-label="Hapus {{ $type->name }} dari bookmark" onclick="event.stopPropagation()">♥</button>
                         </form>
                     @else
                         <form method="POST" action="{{ route('student.bookmarks.store', $type) }}" class="bookmark-inline-form">
                             @csrf
-                            <button type="submit" class="bookmark-icon-button" aria-label="Simpan {{ $type->name }} ke bookmark">♡</button>
+                            <button type="submit" class="bookmark-icon-button" aria-label="Simpan {{ $type->name }} ke bookmark" onclick="event.stopPropagation()">♡</button>
                         </form>
                     @endif
                 </div>
@@ -96,8 +97,8 @@
                     <strong>{{ $type->deadline?->format('d M Y') ?? '-' }}</strong>
                 </div>
                 <div class="card-action-row">
-                    <a class="text-link" href="{{ route('student.applications.create', ['type' => $type->id]) }}">Ajukan berkas</a>
-                    <a class="text-link master-link" href="{{ $type->registration_link }}" target="_blank" rel="noopener noreferrer">Buka link pendaftaran</a>
+                    <a class="text-link" href="{{ route('student.applications.create', ['type' => $type->id]) }}" onclick="event.stopPropagation()">Ajukan berkas</a>
+                    <a class="text-link master-link" href="{{ $type->registration_link }}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Buka link pendaftaran</a>
                 </div>
             </div>
         </article>

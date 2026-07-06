@@ -71,8 +71,6 @@ Route::middleware(['auth', 'student'])->group(function (): void {
     Route::get('/applications/create', [StudentApplicationController::class, 'create'])->name('student.applications.create');
     Route::post('/applications', [StudentApplicationController::class, 'store'])->name('student.applications.store');
     Route::get('/applications/{studentApplication}', [StudentApplicationController::class, 'show'])->name('student.applications.show');
-    Route::patch('/applications/{studentApplication}/documents/{applicationDocument}/revision', [StudentApplicationController::class, 'reviseDocument'])
-        ->name('student.applications.documents.revise');
 });
 
 /*
@@ -113,4 +111,9 @@ Route::middleware(['auth', 'admin'])
         Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
         Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
         Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+
+        Route::get('/users', [\App\Http\Controllers\Admin\AdminUserController::class, 'index'])->name('users.index');
+        Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\AdminUserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [\App\Http\Controllers\Admin\AdminUserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [\App\Http\Controllers\Admin\AdminUserController::class, 'destroy'])->name('users.destroy');
     });

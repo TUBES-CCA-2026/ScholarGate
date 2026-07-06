@@ -19,7 +19,17 @@
             <input id="create-name" type="text" name="name" placeholder="Masukkan Nama Beasiswa" required>
 
             <label for="create-category">Kategori</label>
-            <input id="create-category" type="text" name="category" placeholder="Prestasi / Kepemimpinan / Riset" required>
+            <select id="create-category" name="category" required>
+                <option value="">Pilih Kategori</option>
+                <option value="S1" {{ old('category') === 'S1' ? 'selected' : '' }}>S1</option>
+                <option value="S2" {{ old('category') === 'S2' ? 'selected' : '' }}>S2</option>
+                <option value="S3" {{ old('category') === 'S3' ? 'selected' : '' }}>S3</option>
+                <option value="Prestasi" {{ old('category') === 'Prestasi' ? 'selected' : '' }}>Prestasi</option>
+                <option value="Kepemimpinan" {{ old('category') === 'Kepemimpinan' ? 'selected' : '' }}>Kepemimpinan</option>
+                <option value="Riset" {{ old('category') === 'Riset' ? 'selected' : '' }}>Riset</option>
+                <option value="Sosial" {{ old('category') === 'Sosial' ? 'selected' : '' }}>Sosial</option>
+                <option value="Olahraga" {{ old('category') === 'Olahraga' ? 'selected' : '' }}>Olahraga</option>
+            </select>
 
             <label for="create-provider">Penyelenggara</label>
             <input id="create-provider" type="text" name="provider" placeholder="Nama penyedia beasiswa">
@@ -97,7 +107,7 @@
                 </div>
 
                 <div class="master-card-actions">
-                    <form method="POST" action="{{ route('admin.document-types.destroy', $type) }}" onsubmit="return confirm('Hapus master ini?')">
+                    <form method="POST" action="{{ route('admin.document-types.destroy', $type) }}" data-confirm="Apakah Anda yakin ingin menghapus beasiswa master ini?">
                         @csrf
                         @method('DELETE')
                         <button class="btn danger small" type="submit">Hapus</button>
@@ -146,7 +156,18 @@
                             </div>
                             <div>
                                 <label for="edit-category-{{ $type->id }}">Kategori</label>
-                                <input id="edit-category-{{ $type->id }}" type="text" name="category" value="{{ $isEditingWithErrors ? old('category') : $type->category }}" required>
+                                @php $editCategoryValue = $isEditingWithErrors ? old('category') : $type->category; @endphp
+                                <select id="edit-category-{{ $type->id }}" name="category" required>
+                                    <option value="">Pilih Kategori</option>
+                                    <option value="S1" {{ $editCategoryValue === 'S1' ? 'selected' : '' }}>S1</option>
+                                    <option value="S2" {{ $editCategoryValue === 'S2' ? 'selected' : '' }}>S2</option>
+                                    <option value="S3" {{ $editCategoryValue === 'S3' ? 'selected' : '' }}>S3</option>
+                                    <option value="Prestasi" {{ $editCategoryValue === 'Prestasi' ? 'selected' : '' }}>Prestasi</option>
+                                    <option value="Kepemimpinan" {{ $editCategoryValue === 'Kepemimpinan' ? 'selected' : '' }}>Kepemimpinan</option>
+                                    <option value="Riset" {{ $editCategoryValue === 'Riset' ? 'selected' : '' }}>Riset</option>
+                                    <option value="Sosial" {{ $editCategoryValue === 'Sosial' ? 'selected' : '' }}>Sosial</option>
+                                    <option value="Olahraga" {{ $editCategoryValue === 'Olahraga' ? 'selected' : '' }}>Olahraga</option>
+                                </select>
                             </div>
                         </div>
 

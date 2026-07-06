@@ -79,7 +79,7 @@
                                         <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/>
                                         <path d="M4.5 20c.8-4 3.2-6 7.5-6s6.7 2 7.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                                     </svg>
-                                    <input id="name" type="text" name="name" value="{{ old('name') }}" placeholder="masukkan nama lengkap" autocomplete="name" required>
+                                    <input id="name" type="text" name="name" value="{{ old('name') }}" placeholder="masukkan nama lengkap" autocomplete="name" pattern="[a-zA-Z\s.,'\-]+" title="Nama lengkap hanya boleh berisi huruf, spasi, titik, koma, tanda petik, dan hubung." required>
                                 </div>
                             </div>
 
@@ -90,7 +90,7 @@
                                         <rect x="3.5" y="5" width="17" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
                                         <path d="M7 9h6M7 13h10M7 16h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                                     </svg>
-                                    <input id="nim" type="text" name="nim" value="{{ old('nim') }}" placeholder="masukkan NIM" autocomplete="off" required>
+                                    <input id="nim" type="text" name="nim" value="{{ old('nim') }}" placeholder="masukkan NIM" autocomplete="off" pattern="[0-9]+" title="NIM hanya boleh berisi angka." required>
                                 </div>
                             </div>
 
@@ -101,7 +101,11 @@
                                         <path d="m3 9 9-4 9 4-9 4-9-4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
                                         <path d="M6 11.5V16c2.5 2 9.5 2 12 0v-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                                     </svg>
-                                    <input id="program_studi" type="text" name="program_studi" value="{{ old('program_studi') }}" placeholder="masukkan program studi" required>
+                                    <select id="program_studi" name="program_studi" required style="padding-right: 20px;">
+                                        <option value="">Pilih Program Studi</option>
+                                        <option value="Teknik Informatika" {{ old('program_studi') === 'Teknik Informatika' ? 'selected' : '' }}>Teknik Informatika</option>
+                                        <option value="Sistem Informasi" {{ old('program_studi') === 'Sistem Informasi' ? 'selected' : '' }}>Sistem Informasi</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -112,7 +116,7 @@
                                         <rect x="4" y="4" width="16" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
                                         <path d="M8 9h8M8 13h8M8 17h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                                     </svg>
-                                    <input id="kelas" type="text" name="kelas" value="{{ old('kelas') }}" placeholder="masukkan kelas" required>
+                                    <x-kelas-selector required="true" is-auth="true" />
                                 </div>
                             </div>
 
@@ -122,7 +126,7 @@
                                     <svg class="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true">
                                         <path d="M7.2 3.5 10 8.2 7.8 10c1.2 2.8 3.4 5 6.2 6.2l1.8-2.2 4.7 2.8c.3.2.5.6.4 1-.5 2-2.2 3.3-4.2 3.2C9.2 20.5 3.5 14.8 3 7.3c-.1-2 1.2-3.7 3.2-4.2.4-.1.8.1 1 .4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
-                                    <input id="phone" type="text" name="phone" value="{{ old('phone') }}" placeholder="masukkan nomor HP" autocomplete="tel">
+                                    <input id="phone" type="tel" name="phone" value="{{ old('phone') }}" placeholder="masukkan nomor HP (10-15 digit angka)" autocomplete="tel" pattern="[0-9]{10,15}" title="Nomor HP harus berupa 10 hingga 15 digit angka saja.">
                                 </div>
                             </div>
 

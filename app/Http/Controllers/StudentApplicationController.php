@@ -105,31 +105,6 @@ class StudentApplicationController extends Controller
     }
 
     /**
-     * Mengganti file dokumen yang diminta revisi oleh admin.
-     */
-    public function reviseDocument(
-        Request $request,
-        StudentApplication $studentApplication,
-        ApplicationDocument $applicationDocument
-    ): RedirectResponse {
-        $this->authorizeRevision($request, $studentApplication, $applicationDocument);
-
-        $request->validate([
-            'revision_file' => [
-                'required',
-                'file',
-                'mimes:' . self::DOCUMENT_MIMES,
-                'max:' . self::MAX_DOCUMENT_SIZE_KB,
-            ],
-        ]);
-
-        $this->replaceDocumentFile($applicationDocument, $request->file('revision_file'));
-        $this->resubmitApplicationWhenRevisionIsComplete($studentApplication);
-
-        return back()->with('success', 'Berkas revisi berhasil diunggah.');
-    }
-
-    /**
      * Aturan validasi pengajuan baru.
      */
     private function storeRules(): array
@@ -137,14 +112,6 @@ class StudentApplicationController extends Controller
         return [
             'document_type_id' => ['required', 'exists:document_types,id'],
             'purpose' => ['required', 'string', 'max:2000'],
-            'requirement_files' => ['nullable', 'array'],
-            'requirement_files.*' => [
-                'nullable',
-                'file',
-                'mimes:' . self::DOCUMENT_MIMES,
-                'max:' . self::MAX_DOCUMENT_SIZE_KB,
-            ],
-            'manual_checks' => ['nullable', 'array'],
         ];
     }
 
@@ -164,17 +131,14 @@ class StudentApplicationController extends Controller
         StudentApplication $application,
         Requirement $requirement
     ): void {
-        $uploadedFile = $request->file("requirement_files.{$requirement->id}");
-        $isCheckedManual = in_array((string) $requirement->id, $request->input('manual_checks', []), true);
-
         ApplicationDocument::create([
             'student_application_id' => $application->id,
             'requirement_id' => $requirement->id,
-            'file_path' => $uploadedFile?->store('application-documents', 'public'),
-            'original_name' => $uploadedFile?->getClientOriginalName(),
-            'is_checked_manual' => $isCheckedManual,
+            'file_path' => null,
+            'original_name' => null,
+            'is_checked_manual' => false,
             'expired_at' => $this->calculateExpirationDate($requirement),
-            'status' => $this->initialDocumentStatus($uploadedFile, $isCheckedManual),
+            'status' => ApplicationDocument::STATUS_MISSING,
         ]);
     }
 
@@ -191,77 +155,10 @@ class StudentApplicationController extends Controller
     }
 
     /**
-     * Menentukan status awal dokumen berdasarkan keberadaan file atau centang manual.
-     */
-    private function initialDocumentStatus(?UploadedFile $uploadedFile, bool $isCheckedManual): string
-    {
-        return ($uploadedFile || $isCheckedManual)
-            ? ApplicationDocument::STATUS_VALID
-            : ApplicationDocument::STATUS_MISSING;
-    }
-
-    /**
-     * Menghapus file lama lalu menyimpan file revisi baru.
-     */
-    private function replaceDocumentFile(ApplicationDocument $document, UploadedFile $file): void
-    {
-        $this->deletePublicFile($document->file_path);
-
-        $document->update([
-            'file_path' => $file->store('application-documents', 'public'),
-            'original_name' => $file->getClientOriginalName(),
-            'is_checked_manual' => false,
-            'status' => ApplicationDocument::STATUS_SUBMITTED,
-            'note' => null,
-        ]);
-    }
-
-    /**
-     * Mengembalikan status pengajuan menjadi submitted ketika seluruh revisi selesai.
-     */
-    private function resubmitApplicationWhenRevisionIsComplete(StudentApplication $application): void
-    {
-        $stillNeedRevision = $application->documents()
-            ->whereIn('status', [ApplicationDocument::STATUS_INVALID, ApplicationDocument::STATUS_MISSING])
-            ->exists();
-
-        if (! $stillNeedRevision) {
-            $application->update(['status' => StudentApplication::STATUS_SUBMITTED]);
-        }
-    }
-
-    /**
      * Otorisasi akses detail pengajuan.
      */
     private function authorizeView(Request $request, StudentApplication $application): void
     {
         abort_unless($application->user_id === $request->user()->id || $request->user()->isAdmin(), 403);
-    }
-
-    /**
-     * Otorisasi unggahan revisi dokumen.
-     */
-    private function authorizeRevision(
-        Request $request,
-        StudentApplication $application,
-        ApplicationDocument $document
-    ): void {
-        abort_unless($application->user_id === $request->user()->id, 403);
-        abort_unless($document->student_application_id === $application->id, 404);
-        abort_unless(
-            $application->status === StudentApplication::STATUS_REVISION
-            && in_array($document->status, [ApplicationDocument::STATUS_INVALID, ApplicationDocument::STATUS_MISSING], true),
-            403
-        );
-    }
-
-    /**
-     * Menghapus file dari storage public jika path masih ada.
-     */
-    private function deletePublicFile(?string $path): void
-    {
-        if ($path) {
-            Storage::disk('public')->delete($path);
-        }
     }
 }

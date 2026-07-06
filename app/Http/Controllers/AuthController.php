@@ -30,10 +30,18 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        $remember = $request->boolean('remember');
+
+        if (! Auth::attempt($credentials, $remember)) {
             return back()
                 ->withErrors(['email' => 'Email atau password tidak sesuai.'])
                 ->onlyInput('email');
+        }
+
+        if ($remember) {
+            cookie()->queue('remember_email', $request->email, 43200); // 30 hari
+        } else {
+            cookie()->queue(cookie()->forget('remember_email'));
         }
 
         $request->session()->regenerate();
