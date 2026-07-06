@@ -5357,3 +5357,22 @@ width: 100%;
     background: transparent !important;
     color: #fbbf24 !important;
 }
+
+/* Global Select Options Styling */
+select option {
+    background-color: #ffffff;
+    color: #111827;
+}
+
+/* Dark Mode Select Options Overrides */
+:root[data-theme="dark"] select option {
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+}
+
+/* Auth Select Input Overrides */
+:root[data-theme="dark"] .auth-input-wrap select {
+    background: #0f172a;
+    border-color: #334155;
+    color: #f8fafc;
+}
