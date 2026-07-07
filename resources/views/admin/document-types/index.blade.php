@@ -37,9 +37,25 @@
             <label for="create-description">Deskripsi</label>
             <textarea id="create-description" name="description" rows="4" required></textarea>
 
-            <label for="create-image">Logo Beasiswa</label>
-            <input id="create-image" type="file" name="image" accept="image/jpeg,image/png,image/webp">
-            <small class="field-help">Format JPG, PNG, atau WEBP. Maksimal 4 MB.</small>
+            <label>Logo Beasiswa</label>
+            <div class="file-upload-zone" data-upload-zone>
+                <input id="create-image" type="file" name="image" accept="image/jpeg,image/png,image/webp" class="file-upload-input" data-upload-input>
+                <div class="file-upload-content" data-upload-content>
+                    <div class="file-upload-icon">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <p class="file-upload-text">Klik atau seret file ke sini</p>
+                    <p class="file-upload-hint">JPG, PNG, WEBP &bull; Maks. 4 MB</p>
+                </div>
+                <div class="file-upload-preview" data-upload-preview style="display:none">
+                    <img src="" alt="Preview" data-upload-preview-img>
+                    <button type="button" class="file-upload-remove" data-upload-remove aria-label="Hapus file">&times;</button>
+                </div>
+            </div>
 
             <label for="create-deadline">Batas Waktu</label>
             <input id="create-deadline" type="date" name="deadline">
@@ -186,15 +202,33 @@
                                 @endif
                             </div>
                             <div class="master-photo-controls">
-                                <label for="edit-image-{{ $type->id }}">Ganti Foto</label>
-                                <input
-                                    id="edit-image-{{ $type->id }}"
-                                    type="file"
-                                    name="image"
-                                    accept="image/jpeg,image/png,image/webp"
-                                    data-image-input
-                                >
-                                <small class="field-help">Foto baru akan menggantikan foto lama. Maksimal 4 MB.</small>
+                                <label>Ganti Foto</label>
+                                <div class="file-upload-zone file-upload-zone--compact" data-upload-zone>
+                                    <input
+                                        id="edit-image-{{ $type->id }}"
+                                        type="file"
+                                        name="image"
+                                        accept="image/jpeg,image/png,image/webp"
+                                        class="file-upload-input"
+                                        data-upload-input
+                                        data-image-input
+                                    >
+                                    <div class="file-upload-content" data-upload-content>
+                                        <div class="file-upload-icon file-upload-icon--small">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                                <polyline points="17 8 12 3 7 8"/>
+                                                <line x1="12" y1="3" x2="12" y2="15"/>
+                                            </svg>
+                                        </div>
+                                        <p class="file-upload-text">Klik atau seret file</p>
+                                        <p class="file-upload-hint">JPG, PNG, WEBP &bull; Maks. 4 MB</p>
+                                    </div>
+                                    <div class="file-upload-preview" data-upload-preview style="display:none">
+                                        <img src="" alt="Preview" data-upload-preview-img>
+                                        <button type="button" class="file-upload-remove" data-upload-remove aria-label="Hapus file">&times;</button>
+                                    </div>
+                                </div>
                                 @if($type->image_path)
                                     <label class="checkbox-line">
                                         <input type="checkbox" name="remove_image" value="1">
@@ -352,6 +386,68 @@
         if (editingId) {
             openModal(document.getElementById(`master-edit-${editingId}`));
         }
+
+        /* ── File Upload Zone ── */
+        document.querySelectorAll('[data-upload-zone]').forEach((zone) => {
+            const input = zone.querySelector('[data-upload-input]');
+            const content = zone.querySelector('[data-upload-content]');
+            const previewWrap = zone.querySelector('[data-upload-preview]');
+            const previewImg = zone.querySelector('[data-upload-preview-img]');
+            const removeBtn = zone.querySelector('[data-upload-remove]');
+
+            if (!input) return;
+
+            const showPreview = (file) => {
+                if (!file || !file.type.startsWith('image/')) return;
+                const reader = new FileReader();
+                reader.addEventListener('load', () => {
+                    previewImg.src = reader.result;
+                    content.style.display = 'none';
+                    previewWrap.style.display = '';
+                });
+                reader.readAsDataURL(file);
+            };
+
+            const resetUpload = () => {
+                input.value = '';
+                previewImg.src = '';
+                content.style.display = '';
+                previewWrap.style.display = 'none';
+            };
+
+            input.addEventListener('change', () => {
+                const file = input.files && input.files[0];
+                if (file) showPreview(file);
+            });
+
+            if (removeBtn) {
+                removeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    resetUpload();
+                });
+            }
+
+            ['dragenter', 'dragover'].forEach((evt) => {
+                zone.addEventListener(evt, (e) => { e.preventDefault(); zone.classList.add('is-dragover'); });
+            });
+            ['dragleave', 'drop'].forEach((evt) => {
+                zone.addEventListener(evt, (e) => { e.preventDefault(); zone.classList.remove('is-dragover'); });
+            });
+            zone.addEventListener('drop', (e) => {
+                const file = e.dataTransfer?.files?.[0];
+                if (file && input.accept) {
+                    const accepted = input.accept.split(',').map(s => s.trim());
+                    if (!accepted.includes(file.type)) return;
+                }
+                if (file) {
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    input.files = dt.files;
+                    showPreview(file);
+                }
+            });
+        });
     })();
 </script>
 @endsection

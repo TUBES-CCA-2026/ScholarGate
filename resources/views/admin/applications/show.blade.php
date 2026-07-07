@@ -109,7 +109,23 @@
                                 @endforeach
                             </select>
 
-                            <input type="file" name="document_file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="font-size: 12px; max-width: 180px;">
+                            <div class="file-upload-zone file-upload-zone--inline" data-upload-zone>
+                                <input type="file" name="document_file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" class="file-upload-input" data-upload-input>
+                                <div class="file-upload-content" data-upload-content>
+                                    <div class="file-upload-icon file-upload-icon--small">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="17 8 12 3 7 8"/>
+                                            <line x1="12" y1="3" x2="12" y2="15"/>
+                                        </svg>
+                                    </div>
+                                    <p class="file-upload-text" style="font-size:12px">Upload file</p>
+                                </div>
+                                <div class="file-upload-preview file-upload-preview--inline" data-upload-preview style="display:none">
+                                    <span class="file-upload-filename" data-upload-filename></span>
+                                    <button type="button" class="file-upload-remove file-upload-remove--small" data-upload-remove aria-label="Hapus file">&times;</button>
+                                </div>
+                            </div>
 
                             @if($document->file_path)
                                 <a class="btn small neutral" href="{{ asset('storage/' . $document->file_path) }}" target="_blank" style="padding: 6px 10px;">Lihat File</a>
@@ -126,4 +142,72 @@
         </table>
     </div>
 </div>
+
+<script>
+(() => {
+    document.querySelectorAll('[data-upload-zone]').forEach((zone) => {
+        const input = zone.querySelector('[data-upload-input]');
+        const content = zone.querySelector('[data-upload-content]');
+        const previewWrap = zone.querySelector('[data-upload-preview]');
+        const previewImg = zone.querySelector('[data-upload-preview-img]');
+        const filenameEl = zone.querySelector('[data-upload-filename]');
+        const removeBtn = zone.querySelector('[data-upload-remove]');
+        if (!input) return;
+
+        const showPreview = (file) => {
+            if (!file) return;
+            if (previewImg && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.addEventListener('load', () => {
+                    previewImg.src = reader.result;
+                    content.style.display = 'none';
+                    previewWrap.style.display = '';
+                });
+                reader.readAsDataURL(file);
+            } else if (filenameEl) {
+                filenameEl.textContent = file.name;
+                content.style.display = 'none';
+                previewWrap.style.display = '';
+            }
+        };
+
+        const resetUpload = () => {
+            input.value = '';
+            if (previewImg) previewImg.src = '';
+            if (filenameEl) filenameEl.textContent = '';
+            content.style.display = '';
+            previewWrap.style.display = 'none';
+        };
+
+        input.addEventListener('change', () => {
+            const file = input.files && input.files[0];
+            if (file) showPreview(file);
+        });
+
+        if (removeBtn) {
+            removeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                resetUpload();
+            });
+        }
+
+        ['dragenter', 'dragover'].forEach((evt) => {
+            zone.addEventListener(evt, (e) => { e.preventDefault(); zone.classList.add('is-dragover'); });
+        });
+        ['dragleave', 'drop'].forEach((evt) => {
+            zone.addEventListener(evt, (e) => { e.preventDefault(); zone.classList.remove('is-dragover'); });
+        });
+        zone.addEventListener('drop', (e) => {
+            const file = e.dataTransfer?.files?.[0];
+            if (file) {
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                input.files = dt.files;
+                showPreview(file);
+            }
+        });
+    });
+})();
+</script>
 @endsection

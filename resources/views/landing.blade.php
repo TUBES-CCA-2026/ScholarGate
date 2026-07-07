@@ -151,11 +151,11 @@
                 </div>
                 <div class="landing-footer-col">
                     <h3 class="landing-footer-title">Hubungi Kami</h3>
-                    <p>
-                        Email: info@scholargate.id<br>
-                        Telepon: +62 812 4145 6546<br>
-                        Gedung Rektorat Lt. 2, Kampus Pusat
-                    </p>
+                    <ul class="landing-footer-links">
+                       <li><a href="mailto:refazym@gmail.com">Email</a></li> 
+                        <li><a href="tel:+6281241456546">Telepon: +62 812 4145 6546</a></li>
+                        <li><a href="https://www.google.com/maps/place/Fakultas+Ilmu+Komputer+UMI/@-5.1097094,119.5768741,12.04z/data=!4m6!3m5!1s0x2dbefd3165008369:0x7af75b8baf265f2b!8m2!3d-5.1361294!4d119.4489271!16s%2Fg%2F11c0rp3024?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYyOS4wIKXMDSoASAFQAw%3D%3D" target="_blank">Jl. Inspeksi Kanal No.2, Panaikang, Kec. Panakkukang, Kota Makassar, Sulawesi Selatan 90231, Indonesia</a></li>
+                    </ul>
                 </div>
             </div>
             <div class="landing-footer-bottom">
