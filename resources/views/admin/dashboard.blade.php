@@ -15,10 +15,22 @@
     </div>
 
     <div class="dashboard-hero__panel dashboard-hero__panel--admin" aria-label="Ringkasan dashboard admin">
-        <div class="dashboard-mini-card"><span>Mahasiswa</span><strong>{{ $summary['students'] }}</strong></div>
-        <div class="dashboard-mini-card"><span>Beasiswa</span><strong>{{ $summary['document_types'] }}</strong></div>
-        <div class="dashboard-mini-card"><span>Baru Dikirim</span><strong>{{ $summary['submitted'] }}</strong></div>
-        <div class="dashboard-mini-card"><span>Direview</span><strong>{{ $summary['in_review'] }}</strong></div>
+        <div class="dashboard-mini-card">
+            <span>Mahasiswa</span>
+            <strong>{{ $summary['students'] }}</strong>
+        </div>
+        <div class="dashboard-mini-card">
+            <span>Beasiswa</span>
+            <strong>{{ $summary['document_types'] }}</strong>
+        </div>
+        <div class="dashboard-mini-card">
+            <span>Baru Dikirim</span>
+            <strong>{{ $summary['submitted'] }}</strong>
+        </div>
+        <div class="dashboard-mini-card">
+            <span>Direview</span>
+            <strong>{{ $summary['in_review'] }}</strong>
+        </div>
     </div>
 </section>
 

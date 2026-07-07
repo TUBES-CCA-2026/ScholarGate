@@ -5,10 +5,10 @@
 <h1 class="page-title">Analitik</h1>
 
 <div class="stats-grid">
-    <div class="stat-card"><span>Total Pengajuan</span><strong>{{ $summary['total'] }}</strong></div>
-    <div class="stat-card"><span>Dikirim</span><strong>{{ $summary['submitted'] }}</strong></div>
-    <div class="stat-card"><span>Sedang Direview</span><strong>{{ $summary['in_review'] }}</strong></div>
-    <div class="stat-card"><span>Disetujui</span><strong>{{ $summary['approved'] }}</strong></div>
+    <div class="stat-card"><div class="stat-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span>Total Pengajuan</span><strong>{{ $summary['total'] }}</strong></div>
+    <div class="stat-card"><div class="stat-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9z"/></svg></div><span>Dikirim</span><strong>{{ $summary['submitted'] }}</strong></div>
+    <div class="stat-card"><div class="stat-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><span>Sedang Direview</span><strong>{{ $summary['in_review'] }}</strong></div>
+    <div class="stat-card"><div class="stat-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><span>Disetujui</span><strong>{{ $summary['approved'] }}</strong></div>
 </div>
 
 <div class="panel mt-24">

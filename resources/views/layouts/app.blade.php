@@ -337,27 +337,29 @@
         const container = document.getElementById('toastContainer');
         if (!container) return;
 
-        const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
-        
-        let icon = type === 'success' ? '✓' : '⚠';
-        
-        toast.innerHTML = `
-            <div class="toast-icon">${icon}</div>
-            <div class="toast-body">${message}</div>
-        `;
-        
-        container.appendChild(toast);
-        
-        // Trigger animation
-        requestAnimationFrame(() => {
-            toast.classList.add('show');
-        });
+        const icons = { success: '✓', error: '✕', danger: '✕', info: 'ℹ', warning: '⚠' };
+        const cssType = type === 'danger' ? 'error' : type;
 
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300); // Wait for transition
-        }, 4000);
+        const toast = document.createElement('div');
+        toast.className = `toast toast--${cssType}`;
+        toast.style.position = 'relative';
+        toast.innerHTML = `
+            <div class="toast-icon">${icons[type] || '✓'}</div>
+            <div class="toast-body">${message}</div>
+            <button class="toast-close" aria-label="Tutup">&times;</button>
+            <div class="toast-progress"></div>
+        `;
+
+        container.appendChild(toast);
+
+        const closeBtn = toast.querySelector('.toast-close');
+        const dismiss = () => {
+            toast.classList.add('is-hiding');
+            setTimeout(() => toast.remove(), 300);
+        };
+
+        closeBtn.addEventListener('click', dismiss);
+        setTimeout(dismiss, 4200);
     };
 </script>
 </body>

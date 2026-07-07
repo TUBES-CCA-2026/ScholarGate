@@ -66,7 +66,7 @@
             $isBookmarked = $bookmarkedIds->contains($type->id);
         @endphp
 
-        <article class="opportunity-card opportunity-card--dashboard" style="cursor: pointer; transition: transform 0.2s;" onclick="window.location='{{ route('student.information') }}#scholarship-{{ $type->id }}'" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+        <article class="opportunity-card opportunity-card--dashboard" style="cursor: pointer;" onclick="window.location='{{ route('student.information') }}#scholarship-{{ $type->id }}'">
             <div class="opportunity-image {{ strtolower(str_replace(' ', '-', $type->category)) }}">
                 @if($type->image_path)
                     <img src="{{ asset('storage/' . $type->image_path) }}" alt="Foto {{ $type->name }}">
@@ -103,7 +103,16 @@
             </div>
         </article>
     @empty
-        <div class="empty-state">Belum ada jenis pengajuan aktif.</div>
+        <div class="empty-state" style="grid-column: 1 / -1; margin-top: 16px;">
+            <div class="empty-state-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+            </div>
+            <strong>Belum Ada Beasiswa Aktif</strong>
+            <p>Silakan periksa kembali halaman ini nanti atau hubungi Admin Prodi.</p>
+        </div>
     @endforelse
 </div>
 @endsection
