@@ -393,24 +393,32 @@
             const content = zone.querySelector('[data-upload-content]');
             const previewWrap = zone.querySelector('[data-upload-preview]');
             const previewImg = zone.querySelector('[data-upload-preview-img]');
+            const filenameEl = zone.querySelector('[data-upload-filename]');
             const removeBtn = zone.querySelector('[data-upload-remove]');
 
             if (!input) return;
 
             const showPreview = (file) => {
-                if (!file || !file.type.startsWith('image/')) return;
-                const reader = new FileReader();
-                reader.addEventListener('load', () => {
-                    previewImg.src = reader.result;
+                if (!file) return;
+                if (previewImg && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.addEventListener('load', () => {
+                        previewImg.src = reader.result;
+                        content.style.display = 'none';
+                        previewWrap.style.display = '';
+                    });
+                    reader.readAsDataURL(file);
+                } else if (filenameEl) {
+                    filenameEl.textContent = file.name;
                     content.style.display = 'none';
                     previewWrap.style.display = '';
-                });
-                reader.readAsDataURL(file);
+                }
             };
 
             const resetUpload = () => {
                 input.value = '';
-                previewImg.src = '';
+                if (previewImg) previewImg.src = '';
+                if (filenameEl) filenameEl.textContent = '';
                 content.style.display = '';
                 previewWrap.style.display = 'none';
             };
@@ -436,10 +444,6 @@
             });
             zone.addEventListener('drop', (e) => {
                 const file = e.dataTransfer?.files?.[0];
-                if (file && input.accept) {
-                    const accepted = input.accept.split(',').map(s => s.trim());
-                    if (!accepted.includes(file.type)) return;
-                }
                 if (file) {
                     const dt = new DataTransfer();
                     dt.items.add(file);
