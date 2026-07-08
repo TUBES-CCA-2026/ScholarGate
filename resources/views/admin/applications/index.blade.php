@@ -19,7 +19,6 @@
 
     <div class="page-head-row">
         <div>
-            <h1>Kelola Beasiswa</h1>
             <p>Admin dapat mencari, memfilter, dan membuka detail pengajuan mahasiswa.</p>
         </div>
     </div>
