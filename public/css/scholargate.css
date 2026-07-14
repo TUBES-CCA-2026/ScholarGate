@@ -2463,18 +2463,20 @@ z-index: 1;
 
 .information-master-button {
     align-self: auto !important;
+    flex-grow: 0 !important;
+    width: auto !important;
 }
 
 @media (max-width: 640px) {
     .information-master-actions {
-        flex-direction: column !important;
-        align-items: stretch !important;
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
     }
 
     .information-master-actions form,
     .information-master-actions .btn,
     .information-master-actions .bookmark-button {
-        width: 100% !important;
+        width: auto !important;
     }
 }
 
@@ -2575,7 +2577,7 @@ grid-column: 1 / -1;
 }
 
 .information-master-button {
-width: 100%;
+width: auto;
 }
 }
 
@@ -5021,6 +5023,79 @@ width: 100%;
 
 :root[data-theme="dark"] .confirm-modal-body p {
     color: #94a3b8;
+}
+
+/* Master Modal (Edit Beasiswa) Dark Mode */
+:root[data-theme="dark"] .master-modal-backdrop {
+    background: rgba(0, 0, 0, 0.75);
+}
+
+:root[data-theme="dark"] .master-modal-dialog {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .master-modal-header {
+    background: #1e293b;
+    border-bottom-color: #334155;
+}
+
+:root[data-theme="dark"] .master-modal-header h2 {
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .modal-eyebrow {
+    color: #94a3b8;
+}
+
+:root[data-theme="dark"] .master-modal-close {
+    background: #0f172a;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .master-modal-close:hover {
+    background: #334155;
+}
+
+:root[data-theme="dark"] .master-photo-editor {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+:root[data-theme="dark"] .master-photo-preview {
+    background: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+:root[data-theme="dark"] .master-active-check {
+    background: #0f172a;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .master-modal-actions {
+    background: #1e293b;
+    border-top-color: #334155;
+}
+
+:root[data-theme="dark"] .master-edit-form label {
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .master-edit-form .field-help {
+    color: #94a3b8;
+}
+
+:root[data-theme="dark"] .requirement-editor-heading label {
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] .checkbox-line {
+    color: #f8fafc;
 }
 
 /* Theme Toggle Button Style */

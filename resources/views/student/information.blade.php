@@ -124,7 +124,7 @@
                         @endif
 
                         <a
-                            class="btn small information-master-button"
+                            class="btn primary small information-master-button"
                             href="{{ route('student.applications.create', ['type' => $type->id]) }}"
                         >
                             Pilih
