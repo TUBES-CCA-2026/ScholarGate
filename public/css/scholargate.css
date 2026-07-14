@@ -588,14 +588,14 @@ width: auto;
 }
 
 .upload-row {
-display: grid;
-    grid-template-columns: 1fr 240px;
-    gap: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     border: 1px solid #e3e7ee;
     border-radius: 12px;
     padding: 14px;
     margin-top: 10px;
-    align-items: center;
 }
 
 .upload-row small {
@@ -1249,7 +1249,7 @@ width: 100%;
 }
 
 .upload-row {
-grid-template-columns: minmax(0, 1fr) minmax(180px, 240px);
+    text-align: center;
 }
 
 .filter-row {

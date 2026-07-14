@@ -15,7 +15,7 @@
 <div class="page-head-row compact">
     <div>
         <h1>Ajukan Berkas Baru</h1>
-        <p>Lengkapi data mahasiswa, pilih jenis pengajuan, lalu unggah berkas yang dibutuhkan.</p>
+        <p>Lengkapi data mahasiswa, pilih jenis pengajuan, lalu masukkan alasan pengajuan.</p>
     </div>
 </div>
 
@@ -124,10 +124,9 @@
             wrapper.className = 'upload-row';
 
             const detail = document.createElement('div');
+            detail.style.textAlign = 'center';
+            detail.style.width = '100%';
             detail.appendChild(createTextElement('strong', item.name));
-            if (item.description) {
-                detail.appendChild(createTextElement('p', item.description));
-            }
 
             wrapper.appendChild(detail);
             box.appendChild(wrapper);
