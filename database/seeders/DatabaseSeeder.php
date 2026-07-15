@@ -85,7 +85,23 @@ class DatabaseSeeder extends Seeder
                 'photo_path' => 'profile-photos/nabil.jpg',
             ]
         );
+
+        User::updateOrCreate(
+            ['email' => 'jyaa@gmail.com'],
+            [
+                'name' => 'Najiyah',
+                'password' => Hash::make('password'),
+                'role' => User::ROLE_STUDENT,
+                'nim' => '13020240041',
+                'program_studi' => 'Teknik Informatika',
+                'kelas' => 'B1',
+                'ipk' => 3.75,
+                'phone' => '085342009360',
+            ]
+        );
+
     }
+
 
     /**
      * Membuat master beasiswa beserta syarat dokumen dasarnya.

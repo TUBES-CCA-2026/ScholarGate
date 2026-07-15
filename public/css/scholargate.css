@@ -4875,6 +4875,12 @@ width: 100%;
     border-color: #334155;
 }
 
+:root[data-theme="dark"] .btn.primary {
+background: var(--primary);
+    color: #0f172a;
+    border-color: var(--primary);
+}
+
 :root[data-theme="dark"] .landing-dashboard-profile strong {
     color: #f8fafc;
 }
@@ -5235,6 +5241,9 @@ width: 100%;
 }
 :root[data-theme="dark"] .auth-card__header p {
     color: #94a3b8;
+}
+:root[data-theme="dark"] .auth-card__header h2 {
+    color: #f8fafc;
 }
 :root[data-theme="dark"] .auth-field label {
     color: #f8fafc;
@@ -6046,15 +6055,15 @@ table tbody tr:hover {
     margin-right: 4px;
     font-size: 10px;
 }
-.status.submitted::before        { content: '📤'; }
-.status.in_review::before        { content: '⏳'; }
-.status.revision::before         { content: '✏️'; }
+.status.submitted::before       
+.status.in_review::before       
+.status.revision::before        
 .status.approved::before,
 .status.completed::before,
-.status.valid::before             { content: '✅'; }
+.status.valid::before           
 .status.rejected::before,
 .status.expired::before,
-.status.missing::before           { content: '❌'; }
+.status.missing::before         
 
 /* ── 9. Search & Filter Bar ── */
 .search-filter-bar {
