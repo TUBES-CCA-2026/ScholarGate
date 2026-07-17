@@ -2765,6 +2765,7 @@ transform: translateY(-2px);
 
 .landing-btn--dark,
 .landing-btn--primary {
+    
 color: #fff;
     background: #070b1d;
     border-color: #070b1d;
@@ -4870,13 +4871,19 @@ width: 100%;
 
 :root[data-theme="dark"] .landing-btn--ghost,
 :root[data-theme="dark"] .landing-btn--light {
-    color: #f8fafc;
+    color: #040f1a;
     background: #1e293b;
     border-color: #334155;
 }
 
 :root[data-theme="dark"] .landing-dashboard-profile strong {
     color: #f8fafc;
+}
+
+:root[data-theme="dark"] .btn.primary {
+background: var(--primary);
+    color: #000000;
+    border-color: var(--primary);
 }
 
 :root[data-theme="dark"] .landing-progress-list div span {
