@@ -86,13 +86,14 @@ class StudentDashboardController extends Controller
         ];
 
 
-        $beasiswa = \App\Models\StudentApplication::select(
-                'document_type_id',
-                DB::raw('count(*) as total')
-            )
-            ->groupBy('document_type_id')
-            ->with('documentType')
-            ->get();
+        $beasiswa = \App\Models\DocumentType::withCount('applications')
+            ->get()
+            ->map(function ($docType) {
+                return (object) [
+                    'documentType' => $docType,
+                    'total' => $docType->applications_count
+                ];
+            });
 
 
         return view('student.analytics', compact('summary', 'beasiswa'));

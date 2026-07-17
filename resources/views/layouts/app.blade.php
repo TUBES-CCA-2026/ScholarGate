@@ -8,8 +8,8 @@ Layout utama dashboard yang memuat sidebar, header, konten, dan script navigasi.
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'ScholarGate' }}</title>
-    <link rel="stylesheet"
-        href="{{ asset('css/scholargate.css') }}?v={{ filemtime(public_path('css/scholargate.css')) }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="{{ asset('css/scholargate.css') }}?v={{ filemtime(public_path('css/scholargate.css')) }}">
     <script>
         // Prevent FOUC
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -467,6 +467,23 @@ Layout utama dashboard yang memuat sidebar, header, konten, dan script navigasi.
             closeBtn.addEventListener('click', dismiss);
             setTimeout(dismiss, 4200);
         };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            flatpickr('input[type="date"]', {
+                dateFormat: 'Y-m-d',
+                allowInput: true,
+                disableMobile: "true"
+            });
+            flatpickr('input[type="datetime-local"]', {
+                enableTime: true,
+                time_24hr: true,
+                dateFormat: 'Y-m-d H:i',
+                allowInput: true,
+                disableMobile: "true"
+            });
+        });
     </script>
 </body>
 
