@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 /**
  * Model header pengajuan mahasiswa.
  */
 class StudentApplication extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasUuids, SoftDeletes;
 
     public const STATUS_SUBMITTED = 'submitted';
     public const STATUS_IN_REVIEW = 'in_review';
@@ -125,6 +126,24 @@ class StudentApplication extends Model
             ->count();
 
         return (int) round(($completed / $total) * 100);
+    }
+
+        /**
+     * Kolom yang otomatis diisi UUID v7 oleh Eloquent.
+     *
+     * @return array<int, string>
+     */
+    public function uniqueIds(): array
+    {
+        return ['uid'];
+    }
+
+    /**
+     * Gunakan uid pada URL dan implicit route model binding.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uid';
     }
 }
 

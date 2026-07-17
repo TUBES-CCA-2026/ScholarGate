@@ -67,7 +67,9 @@ class StudentApplicationController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate($this->storeRules());
-        $documentType = DocumentType::with('requirements')->findOrFail($validated['document_type_id']);
+        $documentType = DocumentType::with('requirements')
+            ->where('uid', $validated['document_type_uid'])
+            ->firstOrFail();
 
         // Cegah mahasiswa mengajukan beasiswa yang sama dua kali
         $alreadyApplied = StudentApplication::where('user_id', $request->user()->id)
@@ -124,8 +126,16 @@ class StudentApplicationController extends Controller
     private function storeRules(): array
     {
         return [
-            'document_type_id' => ['required', 'exists:document_types,id'],
-            'purpose' => ['required', 'string', 'max:2000'],
+            'document_type_uid' => [
+                'required',
+                'uuid',
+                'exists:document_types,uid',
+            ],
+            'purpose' => [
+            'required',
+            'string',
+            'max:2000',
+            ],
         ];
     }
 

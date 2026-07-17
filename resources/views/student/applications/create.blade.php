@@ -53,7 +53,7 @@
 
         <div class="form-section-title">DETAIL PENGAJUAN</div>
         <label>Jenis Pengajuan</label>
-        <select name="document_type_id" id="documentTypeSelect" required>
+        <select name="document_type_uid" id="documentTypeSelect" required>
             <option value="">Pilih jenis pengajuan</option>
             @foreach($documentTypes as $type)
                 @php
@@ -67,17 +67,17 @@
                 @endphp
 
                 <option
-                    value="{{ $type->id }}"
+                    value="{{ $type->uid }}"
                     data-requirements='@json($requirementsPayload)'
                     {{ $isApplied ? 'disabled' : '' }}
-                    {{ !$isApplied && (string) old('document_type_id', request('type')) === (string) $type->id ? 'selected' : '' }}
+                    {{ !$isApplied && (string) old('document_type_uid', request('type')) === (string) $type->uid ? 'selected' : '' }}
                 >
                     {{ $type->name }}{{ $isApplied ? ' — ✓ Sudah Diajukan' : '' }}
                 </option>
             @endforeach
         </select>
 
-        @error('document_type_id')
+        @error('document_type_uid')
             <small class="text-danger">{{ $message }}</small>
         @enderror
 

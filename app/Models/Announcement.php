@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Announcement extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     /**
      * Atribut yang boleh diisi melalui mass assignment.
@@ -29,5 +30,23 @@ class Announcement extends Model
         return [
             'published_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Kolom yang otomatis diisi UUID v7 oleh Eloquent.
+     *
+     * @return array<int, string>
+     */
+    public function uniqueIds(): array
+    {
+        return ['uid'];
+    }
+
+    /**
+     * Gunakan uid pada URL dan implicit route model binding.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uid';
     }
 }

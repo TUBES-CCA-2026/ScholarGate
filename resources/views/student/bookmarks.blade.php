@@ -63,7 +63,7 @@
             </div>
 
             <div class="information-master-actions">
-                <a class="btn small information-master-button" href="{{ route('student.applications.create', ['type' => $type->id]) }}">Ajukan</a>
+                <a class="btn small information-master-button" href="{{ route('student.applications.create', ['type' => $type->uid]) }}">Ajukan</a>
                 <form method="POST" action="{{ route('student.bookmarks.destroy', $type) }}">
                     @csrf
                     @method('DELETE')

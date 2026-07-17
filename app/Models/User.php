@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 /**
  * Model pengguna ScholarGate.
@@ -16,7 +17,7 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, HasUuids, Notifiable;
 
     public const ROLE_ADMIN = 'admin';
     public const ROLE_STUDENT = 'student';
@@ -95,5 +96,25 @@ class User extends Authenticatable
     public function isStudent(): bool
     {
         return $this->role === self::ROLE_STUDENT;
+    }
+
+        /**
+     * Kolom yang otomatis diisi UUID v7 oleh Eloquent.
+     *
+     * Primary key integer id tetap digunakan untuk relasi internal.
+     *
+     * @return array<int, string>
+     */
+    public function uniqueIds(): array
+    {
+        return ['uid'];
+    }
+
+    /**
+     * Gunakan uid pada URL dan implicit route model binding.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uid';
     }
 }

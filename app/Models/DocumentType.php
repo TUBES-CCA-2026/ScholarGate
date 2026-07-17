@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class DocumentType extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     /**
      * Atribut yang boleh diisi melalui mass assignment.
@@ -69,5 +70,23 @@ class DocumentType extends Model
     public function bookmarkedByUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'bookmarks')->withTimestamps();
+    }
+
+        /**
+     * Kolom yang otomatis diisi UUID v7 oleh Eloquent.
+     *
+     * @return array<int, string>
+     */
+    public function uniqueIds(): array
+    {
+        return ['uid'];
+    }
+
+    /**
+     * Gunakan uid pada URL dan implicit route model binding.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uid';
     }
 }
