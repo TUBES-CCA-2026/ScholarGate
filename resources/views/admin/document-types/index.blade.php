@@ -425,19 +425,24 @@ Halaman admin untuk mengelola master beasiswa, foto, status aktif, dan syarat do
 
                 const showPreview = (file) => {
                     if (!file) return;
-                    if (previewImg && file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.addEventListener('load', () => {
-                            previewImg.src = reader.result;
-                            content.style.display = 'none';
-                            previewWrap.style.display = '';
-                        });
-                        reader.readAsDataURL(file);
-                    } else if (filenameEl) {
-                        filenameEl.textContent = file.name;
+
+                    if (!file.type.startsWith('image/')) {
+                        if (window.showToast) {
+                            window.showToast('Format berkas harus berupa gambar (JPG, PNG, WEBP)', 'error');
+                        } else {
+                            alert('Format berkas harus berupa gambar (JPG, PNG, WEBP)');
+                        }
+                        resetUpload();
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.addEventListener('load', () => {
+                        previewImg.src = reader.result;
                         content.style.display = 'none';
                         previewWrap.style.display = '';
-                    }
+                    });
+                    reader.readAsDataURL(file);
                 };
 
                 const resetUpload = () => {

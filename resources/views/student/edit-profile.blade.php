@@ -102,7 +102,18 @@
         if (!input) return;
 
         const showPreview = (file) => {
-            if (!file || !file.type.startsWith('image/')) return;
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                if (window.showToast) {
+                    window.showToast('Format berkas harus berupa gambar (JPG, PNG, WEBP)', 'error');
+                } else {
+                    alert('Format berkas harus berupa gambar (JPG, PNG, WEBP)');
+                }
+                resetUpload();
+                return;
+            }
+
             const reader = new FileReader();
             reader.addEventListener('load', () => {
                 previewImg.src = reader.result;
@@ -121,7 +132,9 @@
 
         input.addEventListener('change', () => {
             const file = input.files && input.files[0];
-            if (file) showPreview(file);
+            if (file) {
+                showPreview(file);
+            }
         });
 
         if (removeBtn) {
