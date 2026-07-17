@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Mengelola proses review pengajuan mahasiswa pada sisi admin.
@@ -49,6 +50,57 @@ class AdminApplicationController extends Controller
         $studentApplication->load(['user', 'documentType', 'documents.requirement']);
 
         return view('admin.applications.show', compact('studentApplication'));
+    }
+
+        /**
+     * Menampilkan dokumen pengajuan untuk admin.
+     *
+     * Route ini sudah berada di balik middleware auth dan admin.
+     */
+    public function viewDocument(
+        StudentApplication $studentApplication,
+        ApplicationDocument $applicationDocument
+    ): StreamedResponse {
+        /*
+        * Pastikan dokumen benar-benar berasal dari pengajuan yang dibuka.
+        */
+        abort_unless(
+            (int) $applicationDocument->student_application_id
+                === (int) $studentApplication->id,
+            404,
+            'Dokumen tidak ditemukan.'
+        );
+
+        abort_unless(
+            filled($applicationDocument->file_path),
+            404,
+            'File belum tersedia.'
+        );
+
+        $disk = Storage::disk('public');
+        $filePath = $applicationDocument->file_path;
+
+        abort_unless(
+            $disk->exists($filePath),
+            404,
+            'File tidak ditemukan di penyimpanan.'
+        );
+
+        $fileName = basename(
+            $applicationDocument->original_name
+                ?: $filePath
+        );
+
+        return $disk->response(
+            $filePath,
+            $fileName,
+            [
+                'Cache-Control' => 'private, no-store, max-age=0',
+                'Pragma' => 'no-cache',
+                'X-Content-Type-Options' => 'nosniff',
+            ],
+            'inline'
+        );
     }
 
     /**
