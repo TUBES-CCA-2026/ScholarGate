@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Mengelola siklus pengajuan berkas mahasiswa.
@@ -118,6 +119,78 @@ class StudentApplicationController extends Controller
         $studentApplication->load(['documentType', 'documents.requirement', 'user']);
 
         return view('student.applications.show', compact('studentApplication'));
+    }
+
+    /**
+     * Menampilkan dokumen pengajuan secara aman.
+     *
+     * Mahasiswa hanya dapat membuka dokumen yang berasal dari
+     * pengajuannya sendiri. Admin tetap dapat mengakses dokumen.
+     */
+    public function viewDocument(
+        Request $request,
+        StudentApplication $studentApplication,
+        ApplicationDocument $applicationDocument
+    ): StreamedResponse {
+        /*
+        * Pastikan mahasiswa hanya membuka pengajuannya sendiri.
+        */
+        $this->authorizeView(
+            $request,
+            $studentApplication
+        );
+
+        /*
+        * Pastikan dokumen benar-benar milik pengajuan yang terdapat
+        * pada URL. Ini mencegah pengguna mengganti ID atau UID dokumen.
+        */
+        abort_unless(
+            (int) $applicationDocument->student_application_id
+                === (int) $studentApplication->id,
+            404,
+            'Dokumen tidak ditemukan.'
+        );
+
+        abort_unless(
+            filled($applicationDocument->file_path),
+            404,
+            'File belum tersedia.'
+        );
+
+        $disk = Storage::disk('public');
+        $filePath = $applicationDocument->file_path;
+
+        /*
+        * Pastikan file masih tersedia di storage.
+        */
+        abort_unless(
+            $disk->exists($filePath),
+            404,
+            'File tidak ditemukan di penyimpanan.'
+        );
+
+        /*
+        * Gunakan nama asli file, tetapi ambil basename untuk mencegah
+        * penggunaan path yang tidak aman.
+        */
+        $fileName = basename(
+            $applicationDocument->original_name
+                ?: $filePath
+        );
+
+        /*
+        * File dikirim melalui Laravel, bukan melalui URL /storage langsung.
+        */
+        return $disk->response(
+            $filePath,
+            $fileName,
+            [
+                'Cache-Control' => 'private, no-store, max-age=0',
+                'Pragma' => 'no-cache',
+                'X-Content-Type-Options' => 'nosniff',
+            ],
+            'inline'
+        );
     }
 
     /**

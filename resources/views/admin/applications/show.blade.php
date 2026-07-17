@@ -142,7 +142,21 @@
                                 </div>
 
                                 @if($document->file_path)
-                                    <a class="btn small neutral" href="{{ asset('storage/' . $document->file_path) }}" target="_blank" style="padding: 6px 10px;">Lihat File</a>
+                                    <a
+                                        class="btn small neutral"
+                                        href="{{ route(
+                                            'admin.applications.documents.view',
+                                            [
+                                                'studentApplication' => $studentApplication,
+                                                'applicationDocument' => $document,
+                                            ]
+                                        ) }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style="padding: 6px 10px;"
+                                    >
+                                        Lihat File
+                                    </a>
                                 @endif
                             </div>
                         </td>

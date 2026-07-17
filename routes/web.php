@@ -67,10 +67,34 @@ Route::middleware(['auth', 'student'])->group(function (): void {
     Route::delete('/bookmarks/{documentType}', [StudentBookmarkController::class, 'destroy'])->name('student.bookmarks.destroy');
     Route::get('/analytics', [StudentDashboardController::class, 'analytics'])->name('student.analytics');
 
-    Route::get('/applications', [StudentApplicationController::class, 'index'])->name('student.applications.index');
-    Route::get('/applications/create', [StudentApplicationController::class, 'create'])->name('student.applications.create');
-    Route::post('/applications', [StudentApplicationController::class, 'store'])->name('student.applications.store');
-    Route::get('/applications/{studentApplication}', [StudentApplicationController::class, 'show'])->name('student.applications.show');
+    Route::get('/applications', [StudentApplicationController::class, 'index'])
+    ->name('student.applications.index');
+
+    Route::get('/applications/create', [StudentApplicationController::class, 'create'])
+        ->name('student.applications.create');
+
+    Route::post('/applications', [StudentApplicationController::class, 'store'])
+        ->name('student.applications.store');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Akses dokumen mahasiswa
+    |--------------------------------------------------------------------------
+    |
+    | Route ini harus ditempatkan sebelum route detail pengajuan.
+    | File hanya bisa dibuka oleh mahasiswa pemilik atau admin.
+    |
+    */
+
+    Route::get(
+        '/applications/{studentApplication}/documents/{applicationDocument}/view',
+        [StudentApplicationController::class, 'viewDocument']
+    )->name('student.applications.documents.view');
+
+    Route::get(
+        '/applications/{studentApplication}',
+        [StudentApplicationController::class, 'show']
+    )->name('student.applications.show');
 });
 
 /*
@@ -96,6 +120,8 @@ Route::middleware(['auth', 'admin'])
         Route::delete('/applications/recycle-bin/{studentApplication}/force-delete',[AdminApplicationController::class, 'forceDelete'])->withTrashed()->name('applications.force-delete');
         Route::delete('/applications/{studentApplication}', [AdminApplicationController::class, 'destroy'])
             ->name('applications.destroy');
+        Route::get('/applications/{studentApplication}/documents/{applicationDocument}/view',[AdminApplicationController::class, 'viewDocument'])->name('applications.documents.view');
+
         Route::get('/applications/{studentApplication}', [AdminApplicationController::class, 'show'])->name('applications.show');
         Route::patch('/applications/{studentApplication}/status', [AdminApplicationController::class, 'updateStatus'])->name('applications.update-status');
         Route::patch('/applications/{studentApplication}/documents/{applicationDocument}', [AdminApplicationController::class, 'updateDocument'])
