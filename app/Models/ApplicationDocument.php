@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ApplicationDocument extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     public const STATUS_MISSING = 'missing';
     public const STATUS_SUBMITTED = 'submitted';
@@ -77,5 +78,23 @@ class ApplicationDocument extends Model
     public function requirement(): BelongsTo
     {
         return $this->belongsTo(Requirement::class);
+    }
+
+        /**
+     * Kolom yang otomatis diisi UUID v7 oleh Eloquent.
+     *
+     * @return array<int, string>
+     */
+    public function uniqueIds(): array
+    {
+        return ['uid'];
+    }
+
+    /**
+     * Gunakan uid pada URL dan implicit route model binding.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uid';
     }
 }

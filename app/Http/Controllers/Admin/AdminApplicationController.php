@@ -203,36 +203,50 @@ class AdminApplicationController extends Controller
     /**
      * Memulihkan pengajuan dari recycle bin.
      */
-    public function restore(int $applicationId): RedirectResponse
+    public function restore(StudentApplication $studentApplication): RedirectResponse 
     {
-        $application = StudentApplication::onlyTrashed()->findOrFail($applicationId);
+        abort_unless(
+            $studentApplication->trashed(),
+            404
+        );
 
-        $application->restore();
+        $studentApplication->restore();
 
         return redirect()
             ->route('admin.applications.recycle-bin')
-            ->with('success', 'Pengajuan berhasil dipulihkan.');
+            ->with(
+                'success',
+                'Pengajuan berhasil dipulihkan.'
+            );
     }
 
     /**
      * Menghapus pengajuan secara permanen dari recycle bin.
      */
-    public function forceDelete(int $applicationId): RedirectResponse
+    public function forceDelete(StudentApplication $studentApplication): RedirectResponse 
     {
-        $application = StudentApplication::onlyTrashed()
-            ->with('documents')
-            ->findOrFail($applicationId);
+        abort_unless(
+            $studentApplication->trashed(),
+            404
+        );
 
-        foreach ($application->documents as $document) {
+        $studentApplication->load('documents');
+
+        foreach ($studentApplication->documents as $document) {
             if ($document->file_path) {
-                Storage::disk('public')->delete($document->file_path);
+                Storage::disk('public')->delete(
+                    $document->file_path
+                );
             }
         }
 
-        $application->forceDelete();
+        $studentApplication->forceDelete();
 
         return redirect()
             ->route('admin.applications.recycle-bin')
-            ->with('success', 'Pengajuan berhasil dihapus permanen.');
+            ->with(
+                'success',
+                'Pengajuan berhasil dihapus permanen.'
+            );
     }
 }

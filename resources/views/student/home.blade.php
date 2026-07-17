@@ -97,7 +97,7 @@
                     <strong>{{ $type->deadline?->format('d M Y') ?? '-' }}</strong>
                 </div>
                 <div class="card-action-row">
-                    <a class="text-link" href="{{ route('student.applications.create', ['type' => $type->id]) }}" onclick="event.stopPropagation()">Ajukan berkas</a>
+                    <a class="text-link" href="{{ route('student.applications.create', ['type' => $type->uid]) }}" onclick="event.stopPropagation()">Ajukan berkas</a>
                     <a class="text-link master-link" href="{{ $type->registration_link }}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Buka link pendaftaran</a>
                 </div>
             </div>

@@ -92,10 +92,8 @@ Route::middleware(['auth', 'admin'])
         Route::get('/applications', [AdminApplicationController::class, 'index'])->name('applications.index');
         Route::get('/applications/recycle-bin', [AdminApplicationController::class, 'recycleBin'])
             ->name('applications.recycle-bin');
-        Route::patch('/applications/recycle-bin/{applicationId}/restore', [AdminApplicationController::class, 'restore'])
-            ->name('applications.restore');
-        Route::delete('/applications/recycle-bin/{applicationId}/force-delete', [AdminApplicationController::class, 'forceDelete'])
-            ->name('applications.force-delete');
+        Route::patch('/applications/recycle-bin/{studentApplication}/restore',[AdminApplicationController::class, 'restore'])->withTrashed()->name('applications.restore');
+        Route::delete('/applications/recycle-bin/{studentApplication}/force-delete',[AdminApplicationController::class, 'forceDelete'])->withTrashed()->name('applications.force-delete');
         Route::delete('/applications/{studentApplication}', [AdminApplicationController::class, 'destroy'])
             ->name('applications.destroy');
         Route::get('/applications/{studentApplication}', [AdminApplicationController::class, 'show'])->name('applications.show');

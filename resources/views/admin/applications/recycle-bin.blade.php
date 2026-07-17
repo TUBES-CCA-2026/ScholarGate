@@ -49,7 +49,7 @@
                             <td>
                                 <div class="table-actions">
                                     <form method="POST"
-                                         action="{{ route('admin.applications.restore', $application->id) }}"
+                                         action="{{ route('admin.applications.restore', $application) }}"
                                          data-confirm="Apakah Anda yakin ingin memulihkan pengajuan ini ke daftar utama?">
                                          @csrf
                                          @method('PATCH')
@@ -60,7 +60,7 @@
                                      </form>
 
                                      <form method="POST"
-                                         action="{{ route('admin.applications.force-delete', $application->id) }}"
+                                         action="{{ route('admin.applications.force-delete', $application) }}"
                                          data-confirm="Apakah Anda yakin ingin menghapus pengajuan ini secara PERMANEN? Tindakan ini tidak dapat dibatalkan!">
                                          @csrf
                                          @method('DELETE')
