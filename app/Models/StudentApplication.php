@@ -27,7 +27,7 @@ class StudentApplication extends Model
      * Label status utama pengajuan yang ditampilkan di UI.
      */
     public const STATUS_LABELS = [
-        self::STATUS_SUBMITTED => 'Dikirim',
+        self::STATUS_SUBMITTED => 'Diajukan',
         self::STATUS_IN_REVIEW => 'Diproses',
         self::STATUS_REVISION => 'Diproses',
         self::STATUS_READY => 'Siap Diambil',
@@ -92,6 +92,18 @@ class StudentApplication extends Model
     }
 
     /**
+     * Mengambil daftar document_type_id yang sudah pernah diajukan oleh mahasiswa.
+     * Digunakan untuk mencegah pengajuan beasiswa yang sama dua kali.
+     *
+     * @return \Illuminate\Support\Collection<int, int>
+     */
+    public static function appliedDocumentTypeIds(int $userId): \Illuminate\Support\Collection
+    {
+        return static::where('user_id', $userId)
+            ->pluck('document_type_id');
+    }
+
+    /**
      * Menghitung persentase kelengkapan dokumen pengajuan.
      */
     public function completionPercentage(): int
@@ -103,7 +115,8 @@ class StudentApplication extends Model
         }
 
         $completed = $this->documents
-            ->filter(fn (ApplicationDocument $document): bool =>
+            ->filter(
+                fn(ApplicationDocument $document): bool =>
                 in_array($document->status, [
                     ApplicationDocument::STATUS_VALID,
                     ApplicationDocument::STATUS_READY,
@@ -112,6 +125,6 @@ class StudentApplication extends Model
             ->count();
 
         return (int) round(($completed / $total) * 100);
-}
+    }
 }
 

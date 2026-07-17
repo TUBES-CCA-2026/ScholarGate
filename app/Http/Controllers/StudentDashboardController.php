@@ -65,6 +65,7 @@ class StudentDashboardController extends Controller
                 ->latest()
                 ->get(),
             'bookmarkedIds' => $request->user()->bookmarks()->pluck('document_type_id'),
+            'appliedTypeIds' => StudentApplication::appliedDocumentTypeIds($request->user()->id),
             'announcements' => Announcement::latest()->take(5)->get(),
         ]);
     }

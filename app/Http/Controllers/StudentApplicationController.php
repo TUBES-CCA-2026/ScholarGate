@@ -46,14 +46,16 @@ class StudentApplicationController extends Controller
     /**
      * Menampilkan form pembuatan pengajuan dengan seluruh master aktif.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
         $documentTypes = DocumentType::where('is_active', true)
             ->with('requirements')
             ->latest()
             ->get();
 
-        return view('student.applications.create', compact('documentTypes'));
+        $appliedTypeIds = StudentApplication::appliedDocumentTypeIds($request->user()->id);
+
+        return view('student.applications.create', compact('documentTypes', 'appliedTypeIds'));
     }
 
     /**
@@ -66,6 +68,18 @@ class StudentApplicationController extends Controller
     {
         $validated = $request->validate($this->storeRules());
         $documentType = DocumentType::with('requirements')->findOrFail($validated['document_type_id']);
+
+        // Cegah mahasiswa mengajukan beasiswa yang sama dua kali
+        $alreadyApplied = StudentApplication::where('user_id', $request->user()->id)
+            ->where('document_type_id', $documentType->id)
+            ->exists();
+
+        if ($alreadyApplied) {
+            return redirect()
+                ->route('student.applications.create')
+                ->with('error', 'Anda sudah pernah mengajukan beasiswa "' . $documentType->name . '". Satu mahasiswa hanya dapat mengajukan satu kali untuk setiap jenis beasiswa.')
+                ->withInput();
+        }
 
         $application = DB::transaction(function () use ($request, $documentType, $validated): StudentApplication {
             $application = StudentApplication::create([
@@ -147,7 +161,7 @@ class StudentApplicationController extends Controller
      */
     private function calculateExpirationDate(Requirement $requirement): ?Carbon
     {
-        if (! $requirement->has_expiry || ! $requirement->valid_days) {
+        if (!$requirement->has_expiry || !$requirement->valid_days) {
             return null;
         }
 

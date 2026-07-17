@@ -24,7 +24,7 @@
             <strong>{{ $summary['document_types'] }}</strong>
         </div>
         <div class="dashboard-mini-card">
-            <span>Baru Dikirim</span>
+            <span>Baru Diajukan</span>
             <strong>{{ $summary['submitted'] }}</strong>
         </div>
         <div class="dashboard-mini-card">

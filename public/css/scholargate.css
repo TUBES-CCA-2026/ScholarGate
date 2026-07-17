@@ -5096,7 +5096,7 @@ width: 100%;
 
 :root[data-theme="dark"] .checkbox-line {
     color: #f8fafc;
-}
+  }
 
 /* Theme Toggle Button Style */
 .theme-toggle {
@@ -6041,20 +6041,7 @@ table tbody tr:hover {
     background: rgba(99,102,241,.08);
 }
 
-/* ── 7. Status Badge with Icons ── */
-.status::before {
-    margin-right: 4px;
-    font-size: 10px;
-}
-.status.submitted::before        { content: '📤'; }
-.status.in_review::before        { content: '⏳'; }
-.status.revision::before         { content: '✏️'; }
-.status.approved::before,
-.status.completed::before,
-.status.valid::before             { content: '✅'; }
-.status.rejected::before,
-.status.expired::before,
-.status.missing::before           { content: '❌'; }
+
 
 /* ── 9. Search & Filter Bar ── */
 .search-filter-bar {
@@ -6304,4 +6291,39 @@ table tbody tr:hover {
 .profile-info-item strong {
     display: block;
     font-size: 14px;
+}
+
+/* ── Custom Scrollbar ── */
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 100px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
 }

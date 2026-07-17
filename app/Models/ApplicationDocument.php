@@ -24,7 +24,7 @@ class ApplicationDocument extends Model
      */
     public const STATUS_LABELS = [
         self::STATUS_MISSING => 'Belum Siap',
-        self::STATUS_SUBMITTED => 'Dikirim',
+        self::STATUS_SUBMITTED => 'Diajukan',
         self::STATUS_VALID => 'Siap',
         self::STATUS_INVALID => 'Perlu Revisi',
         self::STATUS_READY => 'Siap Diambil',

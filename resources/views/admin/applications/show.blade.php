@@ -5,10 +5,16 @@
 @section('content')
 @php
     $statusOptions = [
-        'submitted' => 'Dikirim',
+        'submitted' => 'Diajukan',
         'in_review' => 'Diproses',
         'ready_pickup' => 'Siap Diambil',
         'rejected' => 'Ditolak',
+    ];
+
+    $documentStatusOptions = [
+        'missing' => 'Belum Diunggah',
+        'ready' => 'Siap Diambil',
+        'invalid' => 'Dibatalkan',
     ];
 @endphp
     <div class="breadcrumb">
@@ -41,6 +47,18 @@
     </div>
 </div>
 
+@if(session('success'))
+    <div style="background: #065f46; border: 1px solid #059669; color: #d1fae5; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem;">
+        ✓ {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div style="background: #7f1d1d; border: 1px solid #dc2626; color: #fecaca; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem;">
+        ⚠️ {{ session('error') }}
+    </div>
+@endif
+
 <div class="two-column">
     <div class="panel">
         <h2>Informasi Pengajuan</h2>
@@ -72,83 +90,72 @@
 <div class="panel mt-24">
     <h2>Dokumen Mahasiswa</h2>
 
-    @php
-        $documentStatusOptions = [
-            'missing' => 'Belum Diunggah',
-            'ready' => 'Siap Diambil',
-            'invalid' => 'Dibatalkan',
-        ];
-    @endphp
+    <form method="POST" action="{{ route('admin.applications.documents.update-all', $studentApplication) }}" enctype="multipart/form-data">
+        @csrf
+        @method('PATCH')
 
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>Syarat</th>
-                    <th>Status</th>
-                    <th>Catatan & Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach($studentApplication->documents as $document)
-                @php
-                    $fileUrl = $document->file_path ? asset('storage/'.$document->file_path) : null;
-                    $extension = strtolower(pathinfo($document->original_name ?? $document->file_path ?? '', PATHINFO_EXTENSION));
-                @endphp
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Syarat</th>
+                        <th>Status</th>
+                        <th>Catatan & Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach($studentApplication->documents as $document)
+                    <tr>
+                        <td>{{ $document->requirement->name }}</td>
+                        <td>
+                            <span class="status {{ $document->status }}">
+                                {{ $document->status_label }}
+                            </span>
+                        </td>
 
-                <tr>
-                    <td>{{ $document->requirement->name }}</td>
-                    <td>
-                        <span class="status {{ $document->status }}">
-                            {{ $document->status_label }}
-                        </span>
-                    </td>
+                        <td>
+                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                <select name="documents[{{ $document->id }}][status]" required style="width: auto;">
+                                    @foreach($documentStatusOptions as $value => $label)
+                                        <option value="{{ $value }}" {{ $document->status === $value ? 'selected' : '' }}>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                </select>
 
-                    <td>
-                        <form method="POST" action="{{ route('admin.applications.documents.update', [$studentApplication, $document]) }}" class="doc-review-form" enctype="multipart/form-data" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                            @csrf
-                            @method('PATCH')
-
-                            <select name="status" required style="width: auto;">
-                                @foreach($documentStatusOptions as $value => $label)
-                                    <option value="{{ $value }}" {{ $document->status === $value ? 'selected' : '' }}>
-                                        {{ $label }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            <div class="file-upload-zone file-upload-zone--inline" data-upload-zone>
-                                <input type="file" name="document_file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" class="file-upload-input" data-upload-input>
-                                <div class="file-upload-content" data-upload-content>
-                                    <div class="file-upload-icon file-upload-icon--small">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                            <polyline points="17 8 12 3 7 8"/>
-                                            <line x1="12" y1="3" x2="12" y2="15"/>
-                                        </svg>
+                                <div class="file-upload-zone file-upload-zone--inline" data-upload-zone>
+                                    <input type="file" name="documents[{{ $document->id }}][file]" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" class="file-upload-input" data-upload-input>
+                                    <div class="file-upload-content" data-upload-content>
+                                        <div class="file-upload-icon file-upload-icon--small">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                                <polyline points="17 8 12 3 7 8"/>
+                                                <line x1="12" y1="3" x2="12" y2="15"/>
+                                            </svg>
+                                        </div>
+                                        <p class="file-upload-text" style="font-size:12px">Upload file</p>
                                     </div>
-                                    <p class="file-upload-text" style="font-size:12px">Upload file</p>
+                                    <div class="file-upload-preview file-upload-preview--inline" data-upload-preview style="display:none">
+                                        <span class="file-upload-filename" data-upload-filename></span>
+                                        <button type="button" class="file-upload-remove file-upload-remove--small" data-upload-remove aria-label="Hapus file">&times;</button>
+                                    </div>
                                 </div>
-                                <div class="file-upload-preview file-upload-preview--inline" data-upload-preview style="display:none">
-                                    <span class="file-upload-filename" data-upload-filename></span>
-                                    <button type="button" class="file-upload-remove file-upload-remove--small" data-upload-remove aria-label="Hapus file">&times;</button>
-                                </div>
+
+                                @if($document->file_path)
+                                    <a class="btn small neutral" href="{{ asset('storage/' . $document->file_path) }}" target="_blank" style="padding: 6px 10px;">Lihat File</a>
+                                @endif
                             </div>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
 
-                            @if($document->file_path)
-                                <a class="btn small neutral" href="{{ asset('storage/' . $document->file_path) }}" target="_blank" style="padding: 6px 10px;">Lihat File</a>
-                            @endif
-
-                            <button class="btn small primary" type="submit">
-                                Simpan
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
-    </div>
+        <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+            <button class="btn primary" type="submit">Simpan Semua Dokumen</button>
+        </div>
+    </form>
 </div>
 
 <script>

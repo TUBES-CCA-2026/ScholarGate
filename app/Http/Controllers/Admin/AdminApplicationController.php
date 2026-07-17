@@ -53,6 +53,9 @@ class AdminApplicationController extends Controller
 
     /**
      * Memperbarui status utama pengajuan dan catatan admin.
+     *
+     * Validasi: status tidak bisa diubah ke 'ready_pickup' jika belum semua
+     * dokumen berstatus 'ready' atau 'invalid'.
      */
     public function updateStatus(Request $request, StudentApplication $studentApplication): RedirectResponse
     {
@@ -60,48 +63,103 @@ class AdminApplicationController extends Controller
             'status' => ['required', 'in:' . self::APPLICATION_STATUSES],
         ]);
 
+        // Cegah ubah ke "Siap Diambil" jika belum semua dokumen siap/dibatalkan
+        if ($validated['status'] === 'ready_pickup') {
+            $studentApplication->load('documents');
+            $allReady = $studentApplication->documents->every(
+                fn (ApplicationDocument $doc) => in_array($doc->status, ['ready', 'invalid'])
+            );
+
+            if (! $allReady) {
+                return back()->with('error', 'Status tidak bisa diubah ke "Siap Diambil" karena masih ada dokumen yang belum berstatus Siap Diambil atau Dibatalkan.');
+            }
+        }
+
         $studentApplication->update($validated);
 
         return back()->with('success', 'Status pengajuan berhasil diperbarui.');
     }
+
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\StudentApplication $studentApplication
-     * @param \App\Models\ApplicationDocument $applicationDocument
-     * @return \Illuminate\Http\RedirectResponse
+     * Memperbarui seluruh status dokumen dalam satu kali simpan.
+     *
+     * Setelah semua dokumen diperbarui, status pengajuan otomatis dihitung:
+     * - Jika ada min. 1 dokumen 'ready' tapi belum semua → 'in_review'
+     * - Jika semua dokumen 'ready' atau 'invalid' → 'ready_pickup'
+     * - Jika semua masih 'missing' → tetap 'submitted'
      */
-    public function updateDocument(
-        Request $request,
-        StudentApplication $studentApplication,
-        ApplicationDocument $applicationDocument
-    ): RedirectResponse {
-        abort_unless($applicationDocument->student_application_id === $studentApplication->id, 404);
+    public function updateAllDocuments(Request $request, StudentApplication $studentApplication): RedirectResponse
+    {
+        $studentApplication->load('documents');
 
         $validated = $request->validate([
-            'status' => ['required', 'in:' . self::DOCUMENT_STATUSES],
-            'note' => ['nullable', 'string', 'max:1000'],
-            'document_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,doc,docx', 'max:4096'],
+            'documents' => ['required', 'array'],
+            'documents.*.status' => ['required', 'in:missing,ready,invalid'],
+            'documents.*.file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,doc,docx', 'max:4096'],
         ]);
 
-        if ($request->hasFile('document_file')) {
-            if ($applicationDocument->file_path) {
-                Storage::disk('public')->delete($applicationDocument->file_path);
+        foreach ($studentApplication->documents as $document) {
+            $docData = $validated['documents'][$document->id] ?? null;
+            if (! $docData) {
+                continue;
             }
 
-            $path = $request->file('document_file')->store('applications/documents', 'public');
-            $applicationDocument->file_path = $path;
-            $applicationDocument->original_name = $request->file('document_file')->getClientOriginalName();
-            $applicationDocument->status = 'ready'; // automatically set to Ready
-        } else {
-            $applicationDocument->status = $validated['status'];
+            // Upload file jika ada
+            if ($request->hasFile("documents.{$document->id}.file")) {
+                if ($document->file_path) {
+                    Storage::disk('public')->delete($document->file_path);
+                }
+
+                $file = $request->file("documents.{$document->id}.file");
+                $document->file_path = $file->store('applications/documents', 'public');
+                $document->original_name = $file->getClientOriginalName();
+
+                // Auto-set status ke 'ready' saat file diunggah
+                $document->status = 'ready';
+            } else {
+                $document->status = $docData['status'];
+            }
+
+            $document->save();
         }
 
-        $applicationDocument->note = $validated['note'] ?? null;
-        $applicationDocument->save();
+        // Hitung ulang status pengajuan berdasarkan status dokumen
+        $this->recalculateApplicationStatus($studentApplication);
 
-        $this->markApplicationAsRevisionWhenDocumentIsInvalid($studentApplication, ['status' => $applicationDocument->status]);
+        return back()->with('success', 'Semua dokumen berhasil diperbarui.');
+    }
 
-        return back()->with('success', 'Dokumen berhasil diperbarui.');
+    /**
+     * Menghitung ulang status pengajuan berdasarkan status seluruh dokumen.
+     */
+    private function recalculateApplicationStatus(StudentApplication $application): void
+    {
+        $application->refresh();
+        $documents = $application->documents;
+
+        if ($documents->isEmpty()) {
+            return;
+        }
+
+        $allReadyOrInvalid = $documents->every(
+            fn (ApplicationDocument $doc) => in_array($doc->status, ['ready', 'invalid'])
+        );
+
+        $hasAtLeastOneReady = $documents->contains(
+            fn (ApplicationDocument $doc) => $doc->status === 'ready'
+        );
+
+        $allMissing = $documents->every(
+            fn (ApplicationDocument $doc) => $doc->status === 'missing'
+        );
+
+        if ($allReadyOrInvalid && $hasAtLeastOneReady) {
+            $application->update(['status' => StudentApplication::STATUS_READY]);
+        } elseif ($hasAtLeastOneReady) {
+            $application->update(['status' => StudentApplication::STATUS_IN_REVIEW]);
+        } elseif ($allMissing) {
+            // Tetap di status saat ini, tidak mundur ke submitted
+        }
     }
 
     /**
@@ -115,20 +173,6 @@ class AdminApplicationController extends Controller
         });
     }
 
-    /**
-     * Mengubah status pengajuan menjadi revisi ketika minimal satu dokumen tidak valid.
-     */
-    private function markApplicationAsRevisionWhenDocumentIsInvalid(StudentApplication $application, array $validated): void
-    {
-        if ($validated['status'] !== ApplicationDocument::STATUS_INVALID) {
-            return;
-        }
-
-        $application->update([
-            'status' => StudentApplication::STATUS_REVISION,
-            'admin_note' => $validated['note'] ?: 'Terdapat berkas yang perlu direvisi.',
-        ]);
-    }
     /**
      * Menampilkan daftar pengajuan yang sudah dihapus sementara.
      */

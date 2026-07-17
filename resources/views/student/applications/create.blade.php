@@ -20,6 +20,11 @@
 </div>
 
 <div class="form-card">
+    @if(session('error'))
+        <div class="alert alert-danger" style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem;">
+            ⚠️ {{ session('error') }}
+        </div>
+    @endif
     <form method="POST" action="{{ route('student.applications.store') }}" class="form-stack">
         @csrf
 
@@ -58,14 +63,16 @@
                         'description' => $requirement->description,
                         'needs_file' => (bool) $requirement->needs_file,
                     ])->values();
+                    $isApplied = $appliedTypeIds->contains($type->id);
                 @endphp
 
                 <option
                     value="{{ $type->id }}"
                     data-requirements='@json($requirementsPayload)'
-                    {{ (string) old('document_type_id', request('type')) === (string) $type->id ? 'selected' : '' }}
+                    {{ $isApplied ? 'disabled' : '' }}
+                    {{ !$isApplied && (string) old('document_type_id', request('type')) === (string) $type->id ? 'selected' : '' }}
                 >
-                    {{ $type->name }}
+                    {{ $type->name }}{{ $isApplied ? ' — ✓ Sudah Diajukan' : '' }}
                 </option>
             @endforeach
         </select>

@@ -102,6 +102,8 @@ Route::middleware(['auth', 'admin'])
         Route::patch('/applications/{studentApplication}/status', [AdminApplicationController::class, 'updateStatus'])->name('applications.update-status');
         Route::patch('/applications/{studentApplication}/documents/{applicationDocument}', [AdminApplicationController::class, 'updateDocument'])
             ->name('applications.documents.update');
+        Route::patch('/applications/{studentApplication}/documents', [AdminApplicationController::class, 'updateAllDocuments'])
+            ->name('applications.documents.update-all');
 
         Route::get('/document-types', [DocumentTypeController::class, 'index'])->name('document-types.index');
         Route::post('/document-types', [DocumentTypeController::class, 'store'])->name('document-types.store');

@@ -57,6 +57,7 @@
             @forelse($documentTypes as $type)
                 @php
                     $isBookmarked = $bookmarkedIds->contains($type->id);
+                    $isApplied = $appliedTypeIds->contains($type->id);
                     $daysLeft = $type->deadline ? now()->startOfDay()->diffInDays($type->deadline, false) : null;
                 @endphp
 
@@ -78,14 +79,17 @@
                             <span class="tag">{{ $type->category }}</span>
                             @if($daysLeft !== null)
                                 @if($daysLeft < 0)
-                                    <span class="deadline-countdown expired">⏱️ Expired</span>
+                                    <span class="deadline-countdown expired">Expired</span>
                                 @elseif($daysLeft <= 3)
-                                    <span class="deadline-countdown urgent">⏱️ {{ $daysLeft }} hari lagi</span>
+                                    <span class="deadline-countdown urgent">{{ $daysLeft }} hari lagi</span>
                                 @elseif($daysLeft <= 7)
-                                    <span class="deadline-countdown warning">⏱️ {{ $daysLeft }} hari lagi</span>
+                                    <span class="deadline-countdown warning">{{ $daysLeft }} hari lagi</span>
                                 @else
-                                    <span class="deadline-countdown">⏱️ {{ $daysLeft }} hari lagi</span>
+                                    <span class="deadline-countdown">{{ $daysLeft }} hari lagi</span>
                                 @endif
+                            @endif
+                            @if($isApplied)
+                                <span class="tag" style="background: #dcfce7; color: #166534; font-size: 0.75rem; font-weight: 600;">✓ Sudah Diajukan</span>
                             @endif
                         </div>
                         <h3>{{ $type->name }}</h3>
@@ -123,12 +127,21 @@
                             </form>
                         @endif
 
-                        <a
-                            class="btn primary small information-master-button"
-                            href="{{ route('student.applications.create', ['type' => $type->id]) }}"
-                        >
-                            Pilih
-                        </a>
+                        @if($isApplied)
+                            <span
+                                class="btn neutral small information-master-button"
+                                style="pointer-events: none; opacity: 0.6;"
+                            >
+                                Sudah Diajukan
+                            </span>
+                        @else
+                            <a
+                                class="btn primary small information-master-button"
+                                href="{{ route('student.applications.create', ['type' => $type->id]) }}"
+                            >
+                                Pilih
+                            </a>
+                        @endif
                     </div>
 
                     <div class="requirement-list">

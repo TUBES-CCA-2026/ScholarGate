@@ -5,7 +5,7 @@
 @section('content')
     @php
         $statusOptions = [
-            'submitted' => 'Dikirim',
+            'submitted' => 'Diajukan',
             'in_review' => 'Diproses',
             'ready_pickup' => 'Siap Diambil',
             'rejected' => 'Ditolak',
