@@ -11,11 +11,6 @@
             'rejected' => 'Ditolak',
         ];
     @endphp
-    <div class="breadcrumb">
-        <a href="{{ route('admin.dashboard') }}">Beranda</a>
-        <span class="breadcrumb-sep">&gt;</span>
-        <span class="breadcrumb-current">Kelola Pengajuan</span>
-    </div>
 
     <div class="page-head-row">
         <div>

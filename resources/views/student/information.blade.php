@@ -4,11 +4,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="breadcrumb">
-        <a href="{{ route('student.home') }}">Beranda</a>
-        <span class="breadcrumb-sep">&gt;</span>
-        <span class="breadcrumb-current">Informasi Beasiswa</span>
-    </div>
+
 
 <div class="page-head-row">
     <div>

@@ -3,11 +3,7 @@ Halaman admin untuk mengelola master beasiswa, foto, status aktif, dan syarat do
 --}}
 @extends('layouts.app')
 @section('content')
-    <div class="breadcrumb">
-        <a href="{{ route('admin.dashboard') }}">Beranda</a>
-        <span class="breadcrumb-sep">&gt;</span>
-        <span class="breadcrumb-current">Data Beasiswa</span>
-    </div>
+
 
     <div class="page-head-row">
         <div>

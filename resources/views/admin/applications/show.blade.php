@@ -17,13 +17,6 @@
         'invalid' => 'Dibatalkan',
     ];
 @endphp
-    <div class="breadcrumb">
-        <a href="{{ route('admin.dashboard') }}">Beranda</a>
-        <span class="breadcrumb-sep">&gt;</span>
-        <a href="{{ route('admin.applications.index') }}">Kelola Pengajuan</a>
-        <span class="breadcrumb-sep">&gt;</span>
-        <span class="breadcrumb-current">Periksa Pengajuan</span>
-    </div>
 
 <div class="page-head-row application-detail-header">
     <div>
