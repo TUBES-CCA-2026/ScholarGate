@@ -29,7 +29,7 @@ class StudentBookmarkController extends Controller
     /**
      * Menambahkan bookmark pada master beasiswa yang masih aktif.
      */
-    public function store(Request $request, DocumentType $documentType): RedirectResponse
+    public function store(Request $request, DocumentType $documentType): RedirectResponse|\Illuminate\Http\JsonResponse
     {
         abort_unless($documentType->is_active, 404);
 
@@ -38,17 +38,33 @@ class StudentBookmarkController extends Controller
             'document_type_id' => $documentType->id,
         ]);
 
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengajuan berhasil ditambahkan ke bookmark.',
+                'is_bookmarked' => true,
+            ]);
+        }
+
         return back()->with('success', 'Pengajuan berhasil ditambahkan ke bookmark.');
     }
 
     /**
      * Menghapus bookmark milik mahasiswa aktif.
      */
-    public function destroy(Request $request, DocumentType $documentType): RedirectResponse
+    public function destroy(Request $request, DocumentType $documentType): RedirectResponse|\Illuminate\Http\JsonResponse
     {
         Bookmark::where('user_id', $request->user()->id)
             ->where('document_type_id', $documentType->id)
             ->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengajuan berhasil dihapus dari bookmark.',
+                'is_bookmarked' => false,
+            ]);
+        }
 
         return back()->with('success', 'Pengajuan berhasil dihapus dari bookmark.');
     }

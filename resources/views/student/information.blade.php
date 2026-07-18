@@ -99,7 +99,7 @@
 
                     <div class="information-master-actions">
                         @if($isBookmarked)
-                            <form method="POST" action="{{ route('student.bookmarks.destroy', $type) }}">
+                            <form method="POST" action="{{ route('student.bookmarks.destroy', $type) }}" class="bookmark-ajax-form">
                                 @csrf
                                 @method('DELETE')
 
@@ -113,7 +113,7 @@
                                 </button>
                             </form>
                         @else
-                            <form method="POST" action="{{ route('student.bookmarks.store', $type) }}">
+                            <form method="POST" action="{{ route('student.bookmarks.store', $type) }}" class="bookmark-ajax-form">
                                 @csrf
 
                                 <button

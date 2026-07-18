@@ -467,6 +467,128 @@ Layout utama dashboard yang memuat sidebar, header, konten, dan script navigasi.
             closeBtn.addEventListener('click', dismiss);
             setTimeout(dismiss, 4200);
         };
+
+        // AJAX Bookmark Logic
+        document.addEventListener('submit', async (e) => {
+            const form = e.target.closest('.bookmark-ajax-form');
+            if (!form) return;
+
+            e.preventDefault();
+
+            const button = form.querySelector('button[type="submit"]');
+            if (!button) return;
+
+            // Prevent double submission
+            button.disabled = true;
+
+            const url = form.getAttribute('action');
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Response not OK');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const isBookmarked = data.is_bookmarked;
+
+                    // Toggle method field for Laravel (DELETE vs POST)
+                    let methodInput = form.querySelector('input[name="_method"]');
+                    if (isBookmarked) {
+                        if (!methodInput) {
+                            methodInput = document.createElement('input');
+                            methodInput.type = 'hidden';
+                            methodInput.name = '_method';
+                            methodInput.value = 'DELETE';
+                            form.appendChild(methodInput);
+                        }
+                    } else {
+                        if (methodInput) {
+                            methodInput.remove();
+                        }
+                    }
+
+                    // Handle card fade out in favorite page
+                    const card = form.closest('.bookmark-master-card');
+                    if (card) {
+                        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            card.remove();
+                            // Update bookmark count badge
+                            const badge = document.querySelector('.bookmark-count-badge');
+                            if (badge) {
+                                const remainingCards = document.querySelectorAll('.bookmark-master-card');
+                                badge.textContent = `${remainingCards.length} tersimpan`;
+                                if (remainingCards.length === 0) {
+                                    location.reload();
+                                }
+                            }
+                        }, 300);
+                    } else {
+                        // Toggle button classes and texts
+                        if (isBookmarked) {
+                            button.classList.add('active');
+                            const label = button.getAttribute('aria-label');
+                            if (label) {
+                                button.setAttribute('aria-label', label.replace('Simpan', 'Hapus').replace('ke', 'dari'));
+                            }
+                        } else {
+                            button.classList.remove('active');
+                            const label = button.getAttribute('aria-label');
+                            if (label) {
+                                button.setAttribute('aria-label', label.replace('Hapus', 'Simpan').replace('dari', 'ke'));
+                            }
+                        }
+
+                        // Toggle icon
+                        const span = button.querySelector('span');
+                        if (span) {
+                            span.textContent = isBookmarked ? '♥' : '♡';
+                            // Replace text node text (e.g. "Simpan" -> "Tersimpan")
+                            for (let node of button.childNodes) {
+                                if (node.nodeType === Node.TEXT_NODE) {
+                                    let text = node.textContent.trim();
+                                    if (text === 'Simpan' || text === 'Tersimpan') {
+                                        node.textContent = isBookmarked ? ' Tersimpan' : ' Simpan';
+                                    }
+                                }
+                            }
+                        } else {
+                            button.textContent = isBookmarked ? '♥' : '♡';
+                        }
+                    }
+
+                    // Show success toast
+                    if (window.showToast) {
+                        window.showToast(data.message, 'success');
+                    }
+                } else {
+                    if (window.showToast) {
+                        window.showToast(data.message || 'Terjadi kesalahan.', 'error');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.showToast) {
+                    window.showToast('Terjadi kesalahan koneksi.', 'danger');
+                }
+            } finally {
+                button.disabled = false;
+            }
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>

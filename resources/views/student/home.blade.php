@@ -78,13 +78,13 @@
                     <h3>{{ $type->provider ?: $type->name }}</h3>
 
                     @if($isBookmarked)
-                        <form method="POST" action="{{ route('student.bookmarks.destroy', $type) }}" class="bookmark-inline-form">
+                        <form method="POST" action="{{ route('student.bookmarks.destroy', $type) }}" class="bookmark-inline-form bookmark-ajax-form">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="bookmark-icon-button active" aria-label="Hapus {{ $type->name }} dari bookmark" onclick="event.stopPropagation()">♥</button>
                         </form>
                     @else
-                        <form method="POST" action="{{ route('student.bookmarks.store', $type) }}" class="bookmark-inline-form">
+                        <form method="POST" action="{{ route('student.bookmarks.store', $type) }}" class="bookmark-inline-form bookmark-ajax-form">
                             @csrf
                             <button type="submit" class="bookmark-icon-button" aria-label="Simpan {{ $type->name }} ke bookmark" onclick="event.stopPropagation()">♡</button>
                         </form>
